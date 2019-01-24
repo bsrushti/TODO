@@ -2,7 +2,9 @@ const App = require("./express");
 const fs = require("fs");
 const logoutHTML = fs.readFileSync("./logout.html");
 const indexHTML = fs.readFileSync("./index.html");
+const signUpHTML = fs.readFileSync("./signUp.html");
 const { sendResponse, parseData } = require("./util");
+const invalidUserHTML = fs.readFileSync("./inValidUser.html");
 
 const readFile = function(filePath) {
   if (!fs.existsSync(filePath)) {
@@ -27,7 +29,7 @@ const readBody = (req, res, next) => {
 
 const getPath = url => {
   if (url == "/") return "./index.html";
-  return `./{url}`;
+  return `./${url}`;
 };
 
 const serveFile = (req, res) => {
@@ -41,20 +43,32 @@ const serveFile = (req, res) => {
   });
 };
 
+const isUserValid = function(user) {
+  return credentials.some(credential => {
+    return (
+      credential.userName == user.userName &&
+      credential.password == user.password
+    );
+  });
+};
+
 const getCredentials = function(req, res) {
   let parsedCredentials = parseData(req.body);
+  if (!isUserValid(parsedCredentials)) {
+    sendResponse(res, invalidUserHTML, 200);
+    return;
+  }
   credentials.push(parsedCredentials);
   if (!req.headers.cookie) {
     let uniqId = new Date().getTime();
     cookies.push(uniqId);
     res.setHeader("Set-Cookie", uniqId);
   }
-  fs.writeFile("./credentials.json", JSON.stringify(credentials), err => {});
   fs.writeFile("./cookies.json", JSON.stringify(cookies), err => {});
   sendResponse(res, logoutHTML, 200);
 };
 
-const renderLogin = function(req, res) {
+const renderLogout = function(req, res) {
   let currCookie = req.headers.cookie;
   cookies.splice(cookies.indexOf(currCookie), 1);
   fs.writeFile("./cookies.json", JSON.stringify(cookies), err => {});
@@ -65,9 +79,22 @@ const renderLogin = function(req, res) {
   sendResponse(res, indexHTML, 200);
 };
 
+const signUp = function(req, res) {
+  let parsedCredentials = parseData(req.body);
+  if (parsedCredentials.password == parsedCredentials.confirmPassword) {
+    delete parsedCredentials.confirmPassword;
+    credentials.push(parsedCredentials);
+    fs.writeFile("./credentials.json", JSON.stringify(credentials), err => {});
+    sendResponse(res, indexHTML, 200);
+    return;
+  }
+  sendResponse(res, signUpHTML, 200);
+};
+
 app.use(readBody);
-app.post("/", renderLogin);
+app.post("/", renderLogout);
 app.post("/loggedIn", getCredentials);
+app.post("/submit", signUp);
 app.use(serveFile);
 
 module.exports = app.handleRequest.bind(app);
