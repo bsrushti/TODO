@@ -48,8 +48,9 @@ describe("handleRequest", function() {
   const app = new App();
   let req = {};
   let res = {};
-  app.routes = [];
+  app.routes = [{ handler: handleEvents }];
+  app.handleRequest(req, res);
   it("should return if routes array is empty", function() {
-    chai.assert.deepEqual(undefined, app.handleRequest(req, res));
+    chai.assert.deepEqual(app.routes, [{ handler: handleEvents }]);
   });
 });
