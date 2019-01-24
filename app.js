@@ -1,10 +1,18 @@
 const App = require("./express");
 const fs = require("fs");
-const cookie = require("./cookies");
-const credentials = require("./credentials");
 const logoutHTML = fs.readFileSync("./logout.html");
 const indexHTML = fs.readFileSync("./index.html");
 const { sendResponse, parseData } = require("./util");
+
+const readFile = function(filePath) {
+  if (!fs.existsSync(filePath)) {
+    fs.writeFileSync(filePath, "[]", err => {});
+  }
+  return JSON.parse(fs.readFileSync(filePath));
+};
+
+const credentials = readFile("./credentials.json");
+const cookies = readFile("./cookies.json");
 
 const app = new App();
 
@@ -38,17 +46,18 @@ const getCredentials = function(req, res) {
   credentials.push(parsedCredentials);
   if (!req.headers.cookie) {
     let uniqId = new Date().getTime();
-    cookie.push(uniqId);
+    cookies.push(uniqId);
     res.setHeader("Set-Cookie", uniqId);
   }
   fs.writeFile("./credentials.json", JSON.stringify(credentials), err => {});
-  fs.writeFile("./cookies.json", JSON.stringify(cookie), err => {});
+  fs.writeFile("./cookies.json", JSON.stringify(cookies), err => {});
   sendResponse(res, logoutHTML, 200);
 };
 
 const renderLogin = function(req, res) {
   let currCookie = req.headers.cookie;
-  console.log(currCookie);
+  cookies.splice(cookies.indexOf(currCookie), 1);
+  fs.writeFile("./cookies.json", JSON.stringify(cookies), err => {});
   res.setHeader(
     "Set-Cookie",
     `${currCookie};expires = Thu, 01 Jan 1970 00:00:00 GMT`
