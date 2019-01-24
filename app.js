@@ -2,7 +2,10 @@ const App = require("./express");
 const fs = require("fs");
 const cookie = require("./cookies");
 const credentials = require("./credentials");
+const logoutHTML = fs.readFileSync("./logout.html");
+const indexHTML = fs.readFileSync("./index.html");
 const { sendResponse, parseData } = require("./util");
+
 const app = new App();
 
 const readBody = (req, res, next) => {
@@ -40,10 +43,21 @@ const getCredentials = function(req, res) {
   }
   fs.writeFile("./credentials.json", JSON.stringify(credentials), err => {});
   fs.writeFile("./cookies.json", JSON.stringify(cookie), err => {});
-  res.end();
+  sendResponse(res, logoutHTML, 200);
+};
+
+const renderLogin = function(req, res) {
+  let currCookie = req.headers.cookie;
+  console.log(currCookie);
+  res.setHeader(
+    "Set-Cookie",
+    `${currCookie};expires = Thu, 01 Jan 1970 00:00:00 GMT`
+  );
+  sendResponse(res, indexHTML, 200);
 };
 
 app.use(readBody);
+app.post("/", renderLogin);
 app.post("/loggedIn", getCredentials);
 app.use(serveFile);
 
