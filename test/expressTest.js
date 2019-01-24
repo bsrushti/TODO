@@ -48,9 +48,44 @@ describe("handleRequest", function() {
   const app = new App();
   let req = {};
   let res = {};
-  app.routes = [{ handler: handleEvents }];
-  app.handleRequest(req, res);
   it("should return if routes array is empty", function() {
-    chai.assert.deepEqual(app.routes, [{ handler: handleEvents }]);
+    app.routes = [];
+    app.handleRequest(req, res);
+    chai.assert.deepEqual(app.routes, []);
   });
+
+  it("should return an array of object when given the method GET", function() {
+    app.routes = [{ method: "GET", url: "/", handler: handleEvents }];
+    app.handleRequest(req, res);
+    chai.assert.deepEqual(app.routes, [
+      { method: "GET", url: "/", handler: handleEvents }
+    ]);
+  });
+
+  it("should return an array", function() {
+    app.routes = [{ method: "GET", url: "/", handler: handleEvents }];
+    let req = { method: "GET", url: "/", handler: handleEvents };
+    app.handleRequest(req, res);
+    chai.assert.deepEqual(app.routes, [
+      { method: "GET", url: "/", handler: handleEvents }
+    ]);
+  });
+
+  it("should return an array", function() {
+    app.routes = [{ method: "POST", url: "/hello/", handler: handleEvents }];
+    let req = { method: "POST", url: "hello", handler: handleEvents };
+    app.handleRequest(req, res);
+    chai.assert.deepEqual(app.routes, [
+      { method: "POST", url: "/hello/", handler: handleEvents }
+    ]);
+  });
+
+  //it("should return an array", function() {
+  //  app.routes = [{ method: "POST", url: "/hello/", handler: handleEvents }];
+  //  let req = { method: "POST", url: "/hello/", handler: handleEvents };
+  //  app.handleRequest(req, res);
+  //  chai.assert.deepEqual(app.routes, [
+  //    { method: "POST", url: "/hello/", handler: handleEvents }
+  //  ]);
+  //});
 });
