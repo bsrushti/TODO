@@ -52,6 +52,10 @@ const isUserValid = function(user) {
   });
 };
 
+const isAlreadyUser = function(candidateName) {
+  return credentials.some(credential => credential.userName == candidateName);
+};
+
 const getCredentials = function(req, res) {
   let parsedCredentials = parseData(req.body);
   if (!isUserValid(parsedCredentials)) {
@@ -81,14 +85,22 @@ const renderLogout = function(req, res) {
 
 const signUp = function(req, res) {
   let parsedCredentials = parseData(req.body);
-  if (parsedCredentials.password == parsedCredentials.confirmPassword) {
-    delete parsedCredentials.confirmPassword;
-    credentials.push(parsedCredentials);
-    fs.writeFile("./credentials.json", JSON.stringify(credentials), err => {});
-    sendResponse(res, indexHTML, 200);
+  if (!isAlreadyUser(parsedCredentials.userName)) {
+    if (parsedCredentials.password == parsedCredentials.confirmPassword) {
+      delete parsedCredentials.confirmPassword;
+      credentials.push(parsedCredentials);
+      fs.writeFile(
+        "./credentials.json",
+        JSON.stringify(credentials),
+        err => {}
+      );
+      sendResponse(res, indexHTML, 200);
+      return;
+    }
+    sendResponse(res, signUpHTML, 200);
     return;
   }
-  sendResponse(res, signUpHTML, 200);
+  sendResponse(res, "already a user,please login", 200);
 };
 
 app.use(readBody);
