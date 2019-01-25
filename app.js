@@ -83,17 +83,21 @@ const renderLogout = function(req, res) {
   sendResponse(res, indexHTML, 200);
 };
 
+const saveCredentials = function(parsedCredentials) {
+  delete parsedCredentials.confirmPassword;
+  credentials.push(parsedCredentials);
+  fs.writeFile("./credentials.json", JSON.stringify(credentials), err => {});
+  return;
+};
+
+const passwordConfirms = parsedCredentials =>
+  parsedCredentials.password == parsedCredentials.confirmPassword;
+
 const signUp = function(req, res) {
   let parsedCredentials = parseData(req.body);
   if (!isAlreadyUser(parsedCredentials.userName)) {
-    if (parsedCredentials.password == parsedCredentials.confirmPassword) {
-      delete parsedCredentials.confirmPassword;
-      credentials.push(parsedCredentials);
-      fs.writeFile(
-        "./credentials.json",
-        JSON.stringify(credentials),
-        err => {}
-      );
+    if (passwordConfirms(parsedCredentials)) {
+      saveCredentials(parsedCredentials);
       sendResponse(res, indexHTML, 200);
       return;
     }
