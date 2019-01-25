@@ -4,13 +4,32 @@
     <link rel="stylesheet" href="/main.css" />
     <title>login</title>
   </head>
-  <body>
-    <form action="/loggedIn" method="POST">
-      <label>user name</label><input type="text" name="userName" required />
-      <label>Password</label><input type="password" name="password" required />
-      <button>submit</button>
-    </form>
-
-    <h3><a href="/signUp.html">Sign Up</a></h3>
+  <body class="container">
+    <div class="bgImg"></div>
+    <div class="toDoImg"></div>
+    <table class="loginCredentials">
+      <tbody>
+        <tr>
+          <td><label>user name</label></td>
+          <td>
+            <input type="text" name="userName" class="userName" required />
+          </td>
+        </tr>
+        <tr>
+          <td><label>password</label></td>
+          <td>
+            <input type="password" name="password" class="password" required />
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div>
+      <form action="/loggedIn" method="POST">
+        <button class="login">login</button>
+      </form>
+    </div>
+    <div>
+      <h3><a href="/signUp.html" class="signUp">Sign Up</a></h3>
+    </div>
   </body>
 </html>
