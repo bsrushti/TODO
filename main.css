@@ -34,17 +34,8 @@
   left: 40%;
 }
 
-.bgImg {
-  filter: blur(3px);
-  background-image: url("./images/toDobck.png");
-  width: 1300px;
-  height: 650px;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-
 .container {
+  background-image: linear-gradient(to right, #83a7b4, #097ca4);
   color: white;
   font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
@@ -53,27 +44,26 @@
 .userName,
 .password {
   font-size: 20px;
+  height: 25px;
+  width: 250px;
 }
 
 .loginCredentials {
   position: absolute;
-  top: 200px;
-  left: 450px;
+  top: 100px;
+  right: 120px;
 }
 
 .signUp {
   text-decoration: none;
   font-weight: lighter;
   color: white;
-  position: absolute;
-  top: 370px;
-  left: 460px;
   border: 1px solid white;
   cursor: pointer;
   text-align: center;
-  width: 150px;
-  height: 30px;
   background-color: #43677d;
+  padding-right: 30px;
+  padding-left: 30px;
 }
 
 .login {
@@ -82,21 +72,30 @@
   height: 40px;
   color: white;
   position: absolute;
-  top: 300px;
-  left: 460px;
-  width: 290px;
+  top: 250px;
+  right: 140px;
+  width: 260px;
 }
 
 .toDoImg {
   background-image: url("./images/toDo.jpg");
-  height: 300px;
-  width: 300px;
+  height: 60%;
+  width: 60%;
   position: absolute;
-  right: 20px;
-  top: 50px;
+  left: 15%;
+  top: 70px;
   background-repeat: no-repeat;
+  transform: rotate(-15deg);
 }
+
 td {
-  padding: 5px;
+  padding: 20px;
   text-align: center;
+}
+
+.signUpDiv {
+  position: absolute;
+  top: 370px;
+  right: 260px;
+  font-size: 20px;
 }
