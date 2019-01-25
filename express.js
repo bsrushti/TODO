@@ -34,7 +34,6 @@ class App {
   handleRequest(req, res) {
     let matchingRoutes = this.routes.filter(r => isMatching(req, r));
     let next = () => {
-      console.log(matchingRoutes.length);
       let current = matchingRoutes[0];
       if (!current) return;
       matchingRoutes = matchingRoutes.slice(1);

@@ -79,13 +79,4 @@ describe("handleRequest", function() {
       { method: "POST", url: "/hello/", handler: handleEvents }
     ]);
   });
-
-  //it("should return an array", function() {
-  //  app.routes = [{ method: "POST", url: "/hello/", handler: handleEvents }];
-  //  let req = { method: "POST", url: "/hello/", handler: handleEvents };
-  //  app.handleRequest(req, res);
-  //  chai.assert.deepEqual(app.routes, [
-  //    { method: "POST", url: "/hello/", handler: handleEvents }
-  //  ]);
-  //});
 });

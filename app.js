@@ -1,6 +1,6 @@
 const App = require("./express");
 const fs = require("fs");
-const logoutHTML = fs.readFileSync("./logout.html");
+const homeHTML = fs.readFileSync("./home.html");
 const indexHTML = fs.readFileSync("./index.html");
 const signUpHTML = fs.readFileSync("./signUp.html");
 const { sendResponse, parseData } = require("./util");
@@ -65,7 +65,7 @@ const getCredentials = function(req, res) {
     res.setHeader("Set-Cookie", uniqId);
   }
   fs.writeFile("./cookies.json", JSON.stringify(cookies), err => {});
-  sendResponse(res, logoutHTML, 200);
+  sendResponse(res, homeHTML, 200);
 };
 
 const renderLogout = function(req, res) {

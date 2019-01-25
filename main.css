@@ -4,3 +4,32 @@
   background-color: green;
   color: white;
 }
+
+.button {
+  float: right;
+  background-color: green;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  color: white;
+  font-size: 20px;
+}
+
+.plus {
+  font-size: 19px;
+  background-color: green;
+  color: white;
+  border: 1px solid black;
+}
+
+.insertTitle {
+  font-size: 20px;
+  width: 300px;
+  border-radius: 3px;
+}
+
+.addList {
+  position: absolute;
+  top: 15%;
+  left: 40%;
+}
