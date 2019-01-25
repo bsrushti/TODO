@@ -1,5 +1,5 @@
 const chai = require("chai");
-const { parseData, sendResponse } = require("../util");
+const { parseData, sendResponse, generateCounter } = require("../util");
 
 describe("parseData", function() {
   it("should return object when single key value pair provided", function() {
@@ -32,5 +32,20 @@ describe("sendResponse", function() {
     let status = 404;
     sendResponse(res, content, status);
     chai.assert.deepEqual(res.statusCode, 404);
+  });
+});
+
+describe("generateCounter", function() {
+  let counter = generateCounter();
+  it("should return one as counter starts from one", function() {
+    let actual = counter();
+    let expected = 1;
+    chai.assert.equal(actual, expected);
+  });
+
+  it("should return two after single function call", function() {
+    let actual = counter();
+    let expected = 2;
+    chai.assert.equal(actual, expected);
   });
 });
