@@ -6,27 +6,30 @@
   </head>
   <body class="container">
     <div class="toDoImg"></div>
-    <table class="loginCredentials">
-      <tbody>
-        <tr>
-          <td><label>user name</label></td>
-          <td>
-            <input type="text" name="userName" class="userName" required />
-          </td>
-        </tr>
-        <tr>
-          <td><label>password</label></td>
-          <td>
-            <input type="password" name="password" class="password" required />
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <div>
-      <form action="/loggedIn" method="POST">
-        <button class="login">login</button>
-      </form>
-    </div>
+    <form action="/loggedIn" method="POST">
+      <table class="loginCredentials">
+        <tbody>
+          <tr>
+            <td><label>user name</label></td>
+            <td>
+              <input type="text" name="userName" class="userName" required />
+            </td>
+          </tr>
+          <tr>
+            <td><label>password</label></td>
+            <td>
+              <input
+                type="password"
+                name="password"
+                class="password"
+                required
+              />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div><button class="login" type="submit">login</button></div>
+    </form>
     <div class="signUpDiv">
       <div>Not a user?</div>
       <a href="/signUp.html" class="signUp"> Sign Up</a>

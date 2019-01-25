@@ -62,8 +62,6 @@ const getCredentials = function(req, res) {
     sendResponse(res, invalidUserHTML, 200);
     return;
   }
-  //is this pushing right?
-  credentials.push(parsedCredentials);
   if (!req.headers.cookie) {
     let uniqId = new Date().getTime();
     cookies.push(uniqId);
