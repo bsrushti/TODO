@@ -1,5 +1,3 @@
-let { generateCounter } = require("./util");
-
 class ToDo {
   constructor(id, title, desc) {
     this.title = title;

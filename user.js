@@ -1,4 +1,3 @@
-const { generateCounter } = require("./util");
 const ToDo = require("./todo");
 
 class User {
