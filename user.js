@@ -1,6 +1,5 @@
 const { generateCounter } = require("./util");
-
-let listCounter = generateCounter();
+const ToDo = require("./todo");
 
 class User {
   constructor(userName) {
@@ -8,8 +7,7 @@ class User {
     this.toDoLists = {};
   }
 
-  addToDo(title, desc) {
-    let id = listCounter();
+  addToDo(id, title, desc) {
     this.toDoLists[id] = new ToDo(id, title, desc);
   }
 

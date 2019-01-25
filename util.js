@@ -1,5 +1,4 @@
-const generateCounter = function() {
-  let count = 1;
+const generateCounter = function(count = 1) {
   return function() {
     return count++;
   };
