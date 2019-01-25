@@ -1,5 +1,4 @@
 let { generateCounter } = require("./util");
-let itemCounter = generateCounter();
 
 class ToDo {
   constructor(id, title, desc) {
@@ -17,8 +16,7 @@ class ToDo {
     };
   }
 
-  addItem(itemDesc) {
-    let id = itemCounter();
+  addItem(id, itemDesc) {
     let item = this._createItem(itemDesc, id);
     this.items[id] = item;
   }

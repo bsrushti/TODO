@@ -35,7 +35,7 @@ const getPath = url => {
 const serveFile = (req, res) => {
   let fileName = getPath(req.url);
   fs.readFile(fileName, function(err, contents) {
-    if (err) {
+    if (err) {  
       sendResponse(res, "NOT FOUND", 404);
       return;
     }
