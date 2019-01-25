@@ -52,6 +52,10 @@ const isUserValid = function(user) {
   });
 };
 
+const isAlreadyUser = function(candidateName) {
+  return credentials.some(credential => credential.userName == candidateName);
+};
+
 const getCredentials = function(req, res) {
   let parsedCredentials = parseData(req.body);
   if (!isUserValid(parsedCredentials)) {
@@ -79,16 +83,28 @@ const renderLogout = function(req, res) {
   sendResponse(res, indexHTML, 200);
 };
 
+const saveCredentials = function(parsedCredentials) {
+  delete parsedCredentials.confirmPassword;
+  credentials.push(parsedCredentials);
+  fs.writeFile("./credentials.json", JSON.stringify(credentials), err => {});
+  return;
+};
+
+const passwordConfirms = parsedCredentials =>
+  parsedCredentials.password == parsedCredentials.confirmPassword;
+
 const signUp = function(req, res) {
   let parsedCredentials = parseData(req.body);
-  if (parsedCredentials.password == parsedCredentials.confirmPassword) {
-    delete parsedCredentials.confirmPassword;
-    credentials.push(parsedCredentials);
-    fs.writeFile("./credentials.json", JSON.stringify(credentials), err => {});
-    sendResponse(res, indexHTML, 200);
+  if (!isAlreadyUser(parsedCredentials.userName)) {
+    if (passwordConfirms(parsedCredentials)) {
+      saveCredentials(parsedCredentials);
+      sendResponse(res, indexHTML, 200);
+      return;
+    }
+    sendResponse(res, signUpHTML, 200);
     return;
   }
-  sendResponse(res, signUpHTML, 200);
+  sendResponse(res, "already a user,please login", 200);
 };
 
 app.use(readBody);
