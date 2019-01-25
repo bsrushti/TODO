@@ -62,7 +62,7 @@ describe("handleRequest", function() {
     ]);
   });
 
-  it("should return an array", function() {
+  it("should return an array of routes when route url is equal to req url and route method is equal to req method", function() {
     app.routes = [{ method: "GET", url: "/", handler: handleEvents }];
     let req = { method: "GET", url: "/", handler: handleEvents };
     app.handleRequest(req, res);
@@ -71,7 +71,7 @@ describe("handleRequest", function() {
     ]);
   });
 
-  it("should return an array", function() {
+  it("should return an array of routes when route url is not equal to req url", function() {
     app.routes = [{ method: "POST", url: "/hello/", handler: handleEvents }];
     let req = { method: "POST", url: "hello", handler: handleEvents };
     app.handleRequest(req, res);
