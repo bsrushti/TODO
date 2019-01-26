@@ -78,7 +78,7 @@
 }
 
 .toDoImg {
-  background-image: url("./images/toDo.jpg");
+  background-image: url("../images/toDo.jpg");
   height: 60%;
   width: 60%;
   position: absolute;

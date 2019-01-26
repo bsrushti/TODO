@@ -1,5 +1,5 @@
 const chai = require("chai");
-const ToDo = require("../todo");
+const ToDo = require("../entities/todo");
 
 describe("todo.addItem", function() {
   let todo = new ToDo("1", "homeWork", "english");

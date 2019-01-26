@@ -1,5 +1,5 @@
 const chai = require("chai");
-const User = require("../user");
+const User = require("../entities/user");
 
 describe("user.addToDo", function() {
   let user = new User("dummy user");

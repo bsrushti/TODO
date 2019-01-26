@@ -1,5 +1,5 @@
 const chai = require("chai");
-const App = require("../express");
+const App = require("../src/express");
 
 const handleUSEEvents = (req, res, next) => {
   next();

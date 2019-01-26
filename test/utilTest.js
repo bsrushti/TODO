@@ -1,5 +1,5 @@
 const chai = require("chai");
-const { parseData, sendResponse, generateCounter } = require("../util");
+const { parseData, sendResponse, generateCounter } = require("../src/util");
 
 describe("parseData", function() {
   it("should return object when single key value pair provided", function() {

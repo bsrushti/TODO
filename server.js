@@ -1,5 +1,5 @@
 const http = require("http");
-const app = require("./app.js");
+const app = require("./src/app.js");
 
 // Do not change the port value
 // If you want to use a different port
