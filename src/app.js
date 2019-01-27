@@ -1,10 +1,12 @@
 const App = require("./express");
 const fs = require("fs");
-const homeHTML = fs.readFileSync("./public/home.html");
-const indexHTML = fs.readFileSync("./public/index.html");
-const signUpHTML = fs.readFileSync("./public/signUp.html");
+const homeHTML = fs.readFileSync("./public/home.html", "utf8");
+const indexHTML = fs.readFileSync("./public/index.html", "utf8");
+const signUpHTML = fs.readFileSync("./public/signUp.html", "utf8");
 const { sendResponse, parseData } = require("./util");
-const invalidUserHTML = fs.readFileSync("./public/inValidUser.html");
+const invalidUserHTML = fs.readFileSync("./public/inValidUser.html", "utf8");
+const { User, Users } = require("../entities/user");
+let users = new Users();
 
 const readFile = function(filePath) {
   if (!fs.existsSync("./data")) {
@@ -66,12 +68,13 @@ const getCredentials = function(req, res) {
     return;
   }
   if (!req.headers.cookie) {
-    let uniqId = new Date().getTime();
-    cookies.push(uniqId);
-    res.setHeader("Set-Cookie", uniqId);
+    let cookie = `${parsedCredentials.userName}:${new Date().getTime()}`;
+    cookies.push(cookie);
+    res.setHeader("Set-Cookie", cookie);
   }
   fs.writeFile("./data/cookies.json", JSON.stringify(cookies), err => {});
-  sendResponse(res, homeHTML, 200);
+  let finalHTML = homeHTML.replace("##namehere##", parsedCredentials.userName);
+  sendResponse(res, finalHTML, 200);
 };
 
 const renderLogout = function(req, res) {
@@ -99,8 +102,11 @@ const saveCredentials = function(parsedCredentials) {
 const passwordConfirms = parsedCredentials =>
   parsedCredentials.password == parsedCredentials.confirmPassword;
 
-const signUp = function(req, res) {
+const signUp = function(users, req, res) {
   let parsedCredentials = parseData(req.body);
+  let user = new User(parsedCredentials.userName);
+  users.addUser(user);
+  fs.writeFileSync("./data/userDetail.json", JSON.stringify(users.users));
   if (!isAlreadyUser(parsedCredentials.userName)) {
     if (passwordConfirms(parsedCredentials)) {
       saveCredentials(parsedCredentials);
@@ -113,10 +119,21 @@ const signUp = function(req, res) {
   sendResponse(res, "already a user,please login", 200);
 };
 
+const writeTitle = function(req, res) {
+  let name = req.body.split("&")[0];
+  let title = req.body.split("&")[1];
+  let userDetail = JSON.parse(
+    fs.readFileSync("./data/userDetail.json", "utf8")
+  );
+  userDetail[name].push({ title });
+  fs.writeFileSync("./data/userDetail.json", JSON.stringify(userDetail));
+};
+
 app.use(readBody);
 app.post("/", renderLogout);
 app.post("/loggedIn", getCredentials);
-app.post("/submit", signUp);
+app.post("/submit", signUp.bind(null, users));
+app.post("/title", writeTitle);
 app.use(serveFile);
 
 module.exports = app.handleRequest.bind(app);
