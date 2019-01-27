@@ -7,6 +7,9 @@ const { sendResponse, parseData } = require("./util");
 const invalidUserHTML = fs.readFileSync("./public/inValidUser.html");
 
 const readFile = function(filePath) {
+  if (!fs.existsSync("./data")) {
+    fs.mkdirSync("./data");
+  }
   if (!fs.existsSync(filePath)) {
     fs.writeFileSync(filePath, "[]", err => {});
   }
