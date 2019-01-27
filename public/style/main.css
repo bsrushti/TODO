@@ -48,7 +48,7 @@
   width: 250px;
 }
 
-.loginCredentials {
+.credentials {
   position: absolute;
   top: 100px;
   right: 120px;
@@ -98,4 +98,15 @@ td {
   top: 370px;
   right: 260px;
   font-size: 20px;
+}
+
+.signUp {
+  font-size: 18px;
+  background-color: #43677d;
+  height: 40px;
+  color: white;
+  position: absolute;
+  top: 350px;
+  right: 140px;
+  width: 260px;
 }
