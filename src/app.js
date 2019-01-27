@@ -104,16 +104,16 @@ const passwordConfirms = parsedCredentials =>
 
 const signUp = function(users, req, res) {
   let parsedCredentials = parseData(req.body);
-  let user = new User(parsedCredentials.userName);
-  users.addUser(user);
-  fs.writeFileSync("./data/userDetail.json", JSON.stringify(users.users));
   if (!isAlreadyUser(parsedCredentials.userName)) {
     if (passwordConfirms(parsedCredentials)) {
+      let user = new User(parsedCredentials.userName);
+      users.addUser(user);
+      fs.writeFileSync("./data/userDetail.json", JSON.stringify(users.users));
       saveCredentials(parsedCredentials);
       sendResponse(res, indexHTML, 200);
       return;
     }
-    sendResponse(res, signUpHTML, 200);
+    sendResponse(res, indexHTML, 200);
     return;
   }
   sendResponse(res, "already a user,please login", 200);
