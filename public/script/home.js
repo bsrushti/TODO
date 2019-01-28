@@ -28,8 +28,10 @@ const displayAllTodo = function(toDoList) {
       className: "description",
       value: toDo.description
     });
-    titles.appendChild(titleDiv);
-    titles.appendChild(descriptionDiv);
+    let TODODiv = generateDiv({ id: "todo", className: "TODO", value: "" });
+    TODODiv.appendChild(titleDiv);
+    TODODiv.appendChild(descriptionDiv);
+    titles.appendChild(TODODiv);
   });
 };
 

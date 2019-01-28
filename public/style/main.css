@@ -113,6 +113,20 @@ td {
   width: 260px;
 }
 
+.TODO {
+  border: 1px solid black;
+  margin-top: 2%;
+  width: 30%;
+  margin-left: 1%;
+}
+
+.TODOs {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10%;
+  
+}
+
 .title {
   font-weight: bold;
   font-size: 20px;
