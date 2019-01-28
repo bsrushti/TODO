@@ -4,7 +4,8 @@ const generateCounter = function(count = 0) {
   };
 };
 
-let counter = generateCounter();
+let toDoCounter = generateCounter();
+let itemCounter = generateCounter();
 
 const getElementById = id => document.getElementById(id);
 
@@ -58,7 +59,7 @@ const getAllDivs = function(id, toDo) {
 const displayAllTodo = function(toDoList) {
   let titles = getElementById("titles");
   toDoList.forEach(toDo => {
-    let id = counter();
+    let id = toDoCounter();
     let {
       titleDiv,
       descriptionDiv,
@@ -74,10 +75,10 @@ const displayAllTodo = function(toDoList) {
   });
 };
 
-const writeTitle = function(name, title, description) {
-  fetch("/title", {
+const writeContentToFile = function(url, content) {
+  fetch(url, {
     method: "POST",
-    body: `${name}&${title}&${description}`
+    body: content
   }).then(() => {
     return;
   });
@@ -91,16 +92,19 @@ const addToDo = function() {
   let description = descriptionElement.value;
   titleElement.value = "";
   descriptionElement.value = "";
-  writeTitle(name, title, description);
+  let content = `{"name":"${name}","title":"${title}","description":"${description}"}`;
+  writeContentToFile("/title", content);
   displayAllTodo([{ title, description }]);
 };
 
 const addItem = function(event) {
-  console.log(event.target.parentElement.parentElement.id);
+  let name = getElementById("name").innerText;
   let parentId = event.target.parentElement.parentElement.id;
   let item = getElementById(`addTask_${parentId}`).value;
+  let content = `{"name":"${name}","toDoId":"${parentId}","item":"${item}"}`;
+  writeContentToFile("/addItem", content);
   let addItemDiv = generateDiv({
-    id: `task_0`,
+    id: itemCounter(),
     className: "task",
     value: item
   });

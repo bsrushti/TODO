@@ -106,6 +106,7 @@ const signUp = function(users, req, res) {
   if (!isAlreadyUser(parsedCredentials.userName)) {
     if (passwordConfirms(parsedCredentials)) {
       let user = new User(parsedCredentials.userName);
+      console.log(user);
       users.addUser(user);
       fs.writeFileSync("./data/userDetail.json", JSON.stringify(users.users));
       saveCredentials(parsedCredentials);
@@ -118,27 +119,32 @@ const signUp = function(users, req, res) {
   sendResponse(res, "already a user,please login", 200);
 };
 
-const writeTitle = function(req, res) {
+const addToDo = function(req, res) {
   let userDetail = fs.readFileSync("./data/userDetail.json").toString();
   if (req.url == "/userDetail") {
     sendResponse(res, userDetail, 200);
     return;
   }
-  let name = req.body.split("&")[0];
-  let title = req.body.split("&")[1];
-  let description = req.body.split("&")[2];
+  let details = JSON.parse(req.body);
+  let { name, title, description } = details;
   let user = JSON.parse(userDetail);
   user[name].push({ title, description });
   fs.writeFileSync("./data/userDetail.json", JSON.stringify(user));
   sendResponse(res, JSON.stringify(user), 200);
 };
 
+const addToDoItem = function(req, res) {
+  let details = JSON.parse(req.body);
+  let { name, toDoId, item } = details;
+};
+
 app.use(readBody);
 app.post("/", renderLogout);
 app.post("/loggedIn", getCredentials);
 app.post("/submit", signUp.bind(null, users));
-app.post("/title", writeTitle);
-app.post("/userDetail", writeTitle);
+app.post("/title", addToDo);
+app.post("/userDetail", addToDo);
+app.post("/addItem", addToDoItem);
 app.use(serveFile);
 
 module.exports = app.handleRequest.bind(app);
