@@ -6,6 +6,8 @@ const generateCounter = function(count = 1) {
 
 let counter = generateCounter();
 
+const getElementById = id => document.getElementById(id);
+
 const generateDiv = function(attributes) {
   let div = document.createElement("div");
   div.id = attributes.id;
@@ -14,23 +16,46 @@ const generateDiv = function(attributes) {
   return div;
 };
 
+const getTitleDiv = (id, toDo) =>
+  generateDiv({
+    id,
+    className: "title",
+    value: toDo.title
+  });
+
+const getDescriptionDiv = (id, toDo) =>
+  generateDiv({
+    id,
+    className: "description",
+    value: toDo.description
+  });
+
+const getItemDiv = function() {
+  let itemDiv = generateDiv({ id: "items", className: "items", value: "" });
+  itemDiv.innerHTML =
+    "<input type='text' placeHolder='enter task' class='insertItem' id='title'/><button class='plus' id='addItem'>&#x2629</button>";
+  return itemDiv;
+};
+
+const getTODODiv = () =>
+  generateDiv({ id: "todo", className: "TODO", value: "" });
+
+const getAllDivs = function(id, toDo) {
+  let titleDiv = getTitleDiv(id, toDo);
+  let descriptionDiv = getDescriptionDiv(id, toDo);
+  let itemDiv = getItemDiv();
+  let TODODiv = getTODODiv();
+  return { titleDiv, descriptionDiv, itemDiv, TODODiv };
+};
+
 const displayAllTodo = function(toDoList) {
-  let titles = document.getElementById("titles");
+  let titles = getElementById("titles");
   toDoList.forEach(toDo => {
     let id = counter();
-    let titleDiv = generateDiv({
-      id,
-      className: "title",
-      value: toDo.title
-    });
-    let descriptionDiv = generateDiv({
-      id,
-      className: "description",
-      value: toDo.description
-    });
-    let TODODiv = generateDiv({ id: "todo", className: "TODO", value: "" });
+    let { titleDiv, descriptionDiv, itemDiv, TODODiv } = getAllDivs(id, toDo);
     TODODiv.appendChild(titleDiv);
     TODODiv.appendChild(descriptionDiv);
+    TODODiv.appendChild(itemDiv);
     titles.appendChild(TODODiv);
   });
 };
@@ -44,10 +69,10 @@ const writeTitle = function(name, title, description) {
   });
 };
 
-const addTitle = function() {
-  let name = document.getElementById("name").innerText;
-  let titleElement = document.getElementById("title");
-  let descriptionElement = document.getElementById("description");
+const addToDo = function() {
+  let name = getElementById("name").innerText;
+  let titleElement = getElementById("title");
+  let descriptionElement = getElementById("description");
   let title = titleElement.value;
   let description = descriptionElement.value;
   titleElement.value = "";
@@ -57,7 +82,7 @@ const addTitle = function() {
 };
 
 const initialize = function() {
-  let name = document.getElementById("name").innerText;
+  let name = getElementById("name").innerText;
   fetch("/userDetail", { method: "POST" })
     .then(data => {
       return data.json();
@@ -65,7 +90,7 @@ const initialize = function() {
     .then(toDoList => {
       displayAllTodo(toDoList[name]);
     });
-  document.getElementById("add").onclick = addTitle;
+  getElementById("addTitle").onclick = addToDo;
 };
 
 window.onload = initialize;

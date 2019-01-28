@@ -22,7 +22,8 @@
   border: 1px solid black;
 }
 
-.insertTitle {
+.insertTitle,
+.insertItem {
   font-size: 20px;
   width: 300px;
   border-radius: 3px;
@@ -117,14 +118,15 @@ td {
   border: 1px solid black;
   margin-top: 2%;
   width: 30%;
+  height: 50%;
   margin-left: 1%;
+  overflow: scroll;
 }
 
 .TODOs {
   display: flex;
   flex-wrap: wrap;
   margin-top: 10%;
-  
 }
 
 .title {
@@ -134,4 +136,8 @@ td {
 
 .description {
   margin-bottom: 20px;
+}
+
+.insertItem {
+  margin-left: 4%;
 }
