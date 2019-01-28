@@ -119,14 +119,17 @@ const signUp = function(users, req, res) {
 };
 
 const writeTitle = function(req, res) {
+  let userDetail = fs.readFileSync("./data/userDetail.json").toString();
+  if (req.url == "/userDetail") {
+    sendResponse(res, userDetail, 200);
+    return;
+  }
   let name = req.body.split("&")[0];
   let title = req.body.split("&")[1];
-  let userDetail = JSON.parse(
-    fs.readFileSync("./data/userDetail.json", "utf8")
-  );
-  userDetail[name].push({ title });
-  fs.writeFileSync("./data/userDetail.json", JSON.stringify(userDetail));
-  sendResponse(res, JSON.stringify(userDetail), 200);
+  let user = JSON.parse(userDetail);
+  user[name].push({ title });
+  fs.writeFileSync("./data/userDetail.json", JSON.stringify(user));
+  sendResponse(res, JSON.stringify(user), 200);
 };
 
 app.use(readBody);
@@ -134,6 +137,7 @@ app.post("/", renderLogout);
 app.post("/loggedIn", getCredentials);
 app.post("/submit", signUp.bind(null, users));
 app.post("/title", writeTitle);
+app.post("/userDetail", writeTitle);
 app.use(serveFile);
 
 module.exports = app.handleRequest.bind(app);

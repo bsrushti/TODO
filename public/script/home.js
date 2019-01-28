@@ -18,30 +18,29 @@ const displayAllTodo = function(toDoList) {
 };
 
 const writeTitle = function(title, name) {
-  fetch("/title", { method: "POST", body: `${name}&${title}` })
+  fetch("/title", { method: "POST", body: `${name}&${title}` }).then(() => {
+    return;
+  });
+};
+
+const addTitle = function() {
+  let name = document.getElementById("name").innerText;
+  let titleElement = document.getElementById("title");
+  let title = titleElement.value;
+  titleElement.value = "";
+  writeTitle(title, name);
+  displayAllTodo([{ title }]);
+};
+
+const initialize = function() {
+  let name = document.getElementById("name").innerText;
+  fetch("/userDetail", { method: "POST" })
     .then(data => {
       return data.json();
     })
     .then(toDoList => {
       displayAllTodo(toDoList[name]);
     });
-};
-
-const addTitle = function() {
-  let div = document.createElement("div");
-  let titleElement = document.getElementById("title");
-  let titles = document.getElementById("titles");
-  let name = document.getElementById("name").innerText;
-  div.id = counter();
-  div.className = "title";
-  let title = titleElement.value;
-  div.innerText = title;
-  titleElement.value = "";
-  titles.appendChild(div);
-  writeTitle(title, name);
-};
-
-const initialize = function() {
   document.getElementById("add").onclick = addTitle;
 };
 
