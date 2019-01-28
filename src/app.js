@@ -2,24 +2,23 @@ const App = require("./express");
 const fs = require("fs");
 const homeHTML = fs.readFileSync("./public/home.html", "utf8");
 const indexHTML = fs.readFileSync("./public/index.html", "utf8");
-const signUpHTML = fs.readFileSync("./public/signUp.html", "utf8");
 const { sendResponse, parseData } = require("./util");
 const invalidUserHTML = fs.readFileSync("./public/inValidUser.html", "utf8");
 const { User, Users } = require("../entities/user");
 let users = new Users();
 
-const readFile = function(filePath) {
+const readFile = function(filePath, initialText) {
   if (!fs.existsSync("./data")) {
     fs.mkdirSync("./data");
   }
   if (!fs.existsSync(filePath)) {
-    fs.writeFileSync(filePath, "[]", err => {});
+    fs.writeFileSync(filePath, initialText, err => {});
   }
   return JSON.parse(fs.readFileSync(filePath));
 };
 
-const credentials = readFile("./data/credentials.json");
-const cookies = readFile("./data/cookies.json");
+const credentials = readFile("./data/credentials.json", "[]");
+const cookies = readFile("./data/cookies.json", "[]");
 
 const app = new App();
 
@@ -127,6 +126,7 @@ const writeTitle = function(req, res) {
   );
   userDetail[name].push({ title });
   fs.writeFileSync("./data/userDetail.json", JSON.stringify(userDetail));
+  sendResponse(res, JSON.stringify(userDetail), 200);
 };
 
 app.use(readBody);

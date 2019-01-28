@@ -6,10 +6,25 @@ const generateCounter = function(count = 1) {
 
 let counter = generateCounter();
 
-const writeTitle = function(title, name) {
-  fetch("/title", { method: "POST", body: `${name}&${title}` }).then(data => {
-    return;
+const displayAllTodo = function(toDoList) {
+  let titles = document.getElementById("titles");
+  toDoList.forEach(todo => {
+    let div = document.createElement("div");
+    div.id = counter();
+    div.className = "title";
+    div.innerText = todo.title;
+    titles.appendChild(div);
   });
+};
+
+const writeTitle = function(title, name) {
+  fetch("/title", { method: "POST", body: `${name}&${title}` })
+    .then(data => {
+      return data.json();
+    })
+    .then(toDoList => {
+      displayAllTodo(toDoList[name]);
+    });
 };
 
 const addTitle = function() {
