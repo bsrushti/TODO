@@ -126,8 +126,9 @@ const writeTitle = function(req, res) {
   }
   let name = req.body.split("&")[0];
   let title = req.body.split("&")[1];
+  let description = req.body.split("&")[2];
   let user = JSON.parse(userDetail);
-  user[name].push({ title });
+  user[name].push({ title, description });
   fs.writeFileSync("./data/userDetail.json", JSON.stringify(user));
   sendResponse(res, JSON.stringify(user), 200);
 };
