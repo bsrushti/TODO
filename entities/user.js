@@ -12,6 +12,10 @@ class Users {
     this.users = {};
   }
 
+  set(users) {
+    this.users = users;
+  }
+
   addUser(user) {
     this.users[user.userName] = [];
   }

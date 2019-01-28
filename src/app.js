@@ -5,7 +5,17 @@ const indexHTML = fs.readFileSync("./public/index.html", "utf8");
 const { sendResponse, parseData } = require("./util");
 const invalidUserHTML = fs.readFileSync("./public/inValidUser.html", "utf8");
 const { User, Users } = require("../entities/user");
+const TODO = require("../entities/todo");
+
 let users = new Users();
+
+const loadUserDetails = function(users) {
+  const content = fs.readFileSync("./data/userDetail.json", "utf8");
+  users.set(JSON.parse(content));
+  return;
+};
+
+loadUserDetails(users);
 
 const readFile = function(filePath, initialText) {
   if (!fs.existsSync("./data")) {
@@ -139,7 +149,8 @@ const addToDo = function(req, res) {
   let details = JSON.parse(req.body);
   let { name, title, description } = details;
   let user = JSON.parse(userDetail);
-  user[name].push({ title, description });
+  let todo = new TODO(title, description);
+  user[name].push(todo);
   fs.writeFileSync("./data/userDetail.json", JSON.stringify(user));
   sendResponse(res, JSON.stringify(user), 200);
 };
@@ -147,6 +158,11 @@ const addToDo = function(req, res) {
 const addToDoItem = function(req, res) {
   let details = JSON.parse(req.body);
   let { name, toDoId, item } = details;
+  let todoItem = { description: item, done: "false" };
+  let userDetail = fs.readFileSync("./data/userDetail.json").toString();
+  let userTODO = JSON.parse(userDetail);
+  userTODO[name][toDoId].items.push(todoItem);
+  fs.writeFileSync("./data/userDetail.json", JSON.stringify(userTODO));
 };
 
 app.use(readBody);
