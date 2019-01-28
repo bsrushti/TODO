@@ -1,9 +1,3 @@
-const generateCounter = function(count = 1) {
-  return function() {
-    return count++;
-  };
-};
-
 const sendResponse = function(res, content, status) {
   res.statusCode = status;
   res.write(content);
@@ -23,6 +17,5 @@ const parseData = text => {
 
 module.exports = {
   sendResponse,
-  parseData,
-  generateCounter
+  parseData
 };
