@@ -9,6 +9,14 @@ const TODO = require("../entities/todo");
 
 let users = new Users();
 
+const loadUserDetails = function(users) {
+  const content = fs.readFileSync("./data/userDetail.json", "utf8");
+  users.set(JSON.parse(content));
+  return;
+};
+
+loadUserDetails(users);
+
 const readFile = function(filePath, initialText) {
   if (!fs.existsSync("./data")) {
     fs.mkdirSync("./data");
