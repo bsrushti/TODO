@@ -138,6 +138,19 @@ td {
   margin-bottom: 20px;
 }
 
+.backToLogin {
+  font-size: 18px;
+  background-color: #43677d;
+  height: 35px;
+  color: white;
+  position: absolute;
+  top: 400px;
+  right: 140px;
+  width: 260px;
+  padding-top: 2px;
+  text-align: center;
+}
+
 .insertItem {
   margin-left: 4%;
 }

@@ -1,6 +1,12 @@
 const chai = require("chai");
 const ToDo = require("../entities/todo");
 
+describe("", function() {
+  it("", function() {
+    chai.assert.deepEqual();
+  });
+});
+
 describe("todo.addItem", function() {
   let todo = new ToDo("1", "homeWork", "english");
   it("should add item in ToDo", function() {
