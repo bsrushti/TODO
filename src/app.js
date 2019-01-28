@@ -60,8 +60,19 @@ const isAlreadyUser = function(candidateName) {
   return credentials.some(credential => credential.userName == candidateName);
 };
 
+const isPasswordCorrect = function(parsedCredentials) {
+  let currentUser = credentials.filter(
+    credential => credential.userName == parsedCredentials.userName
+  )[0];
+  return currentUser.password == parsedCredentials.password;
+};
+
 const getCredentials = function(req, res) {
   let parsedCredentials = parseData(req.body);
+  if (!isPasswordCorrect(parsedCredentials)) {
+    sendResponse(res, "Incorrect Password", 200);
+    return;
+  }
   if (!isUserValid(parsedCredentials)) {
     sendResponse(res, invalidUserHTML, 200);
     return;
