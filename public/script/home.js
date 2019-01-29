@@ -94,16 +94,26 @@ const displayToDo = function(toDo, TODOs) {
   TODOs.appendChild(TODODiv);
 };
 
-const save = function(event) {
+const getItemsValue = function(event) {
   let name = getElementById("name").innerText;
   let id = event.target.parentElement.id;
   let items = getElementById(`taskList_${id}`);
-  items = items.innerText.split("\n");
+  return { name, id, items };
+};
+
+const getModifiedItems = function(itemList) {
   let modifiedItems = [];
-  items.forEach(item => {
+  itemList.forEach(item => {
     let itemAttributes = { description: item, done: "false" };
     modifiedItems.push(JSON.stringify(itemAttributes));
   });
+  return modifiedItems;
+};
+
+const save = function(event) {
+  let { name, id, items } = getItemsValue(event);
+  let itemList = items.innerText.split("\n");
+  let modifiedItems = getModifiedItems(itemList);
   let content = { name: name, id: id, items: modifiedItems };
   writeContentToFile("/saveItems", JSON.stringify(content));
 };
@@ -140,7 +150,7 @@ const getElements = function() {
   return { nameElement, titleElement, descriptionElement };
 };
 
-const getValues = function(elements) {
+const getToDoValues = function(elements) {
   const { nameElement, titleElement, descriptionElement } = elements;
   let name = nameElement.innerText;
   let title = titleElement.value;
@@ -152,7 +162,7 @@ const getValues = function(elements) {
 
 const addToDo = function() {
   let elements = getElements();
-  let { name, title, description } = getValues(elements);
+  let { name, title, description } = getToDoValues(elements);
   let content = `{"name":"${name}","title":"${title}","description":"${description}"}`;
   writeContentToFile("/title", content);
   let items = [{ description: "" }];
