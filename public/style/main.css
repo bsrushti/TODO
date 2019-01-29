@@ -27,7 +27,7 @@
   color: white;
   position: absolute;
   right: 3px;
-  bottom: 3px;
+  top: 2px;
   font-size: 14px;
 }
 
@@ -163,4 +163,9 @@ td {
 
 .insertItem {
   margin-left: 4%;
+}
+
+.checkbox {
+  position: absolute;
+  right: 2px;
 }

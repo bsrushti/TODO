@@ -160,7 +160,7 @@ const addToDoItem = function(req, res) {
   let userDetail = fs.readFileSync("./data/userDetail.json").toString();
   let userTODO = JSON.parse(userDetail);
   userTODO[name][toDoId].items.push(todoItem);
-  fs.writeFileSync("./data/userDetail.json", JSON.stringify(userTODO));
+  fs.writeFileSync("./data/userDetail.json", JSON.stringify(userTODO, null, 2));
   res.end();
 };
 
@@ -172,7 +172,10 @@ const saveItems = function(req, res) {
     items.push(JSON.parse(item));
   });
   users.users[name][details.id].items = items;
-  fs.writeFileSync("./data/userDetail.json", JSON.stringify(users.users));
+  fs.writeFileSync(
+    "./data/userDetail.json",
+    JSON.stringify(users.users, null, 2)
+  );
   res.end();
 };
 
