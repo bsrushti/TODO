@@ -1,7 +1,7 @@
 class TODO {
-  constructor(title, desc) {
+  constructor(title, description) {
     this.title = title;
-    this.desc = desc;
+    this.description = description;
     this.items = [];
   }
 

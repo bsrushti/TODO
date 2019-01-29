@@ -24,7 +24,7 @@ const getTitleDiv = (id, title) =>
     value: title
   });
 
-const getDescriptionDiv = (id, description) =>
+const getdescriptionDiv = (id, description) =>
   generateDiv({
     id: `description_${id}`,
     className: "description",
@@ -39,21 +39,37 @@ const getTaskListDiv = function(id) {
   });
 };
 
-const getItemDiv = function(id) {
+const getAddItemDiv = function(id) {
   let addItemDiv = generateDiv({ id: "items", className: "items", value: "" });
   addItemDiv.innerHTML = `<input type='text' placeHolder='enter task' class='insertItem' id='addTask_${id}'/><button class='plus' id='addItem' onclick='addItem(event)'>&#x2629</button>`;
   return addItemDiv;
+};
+
+const getItemsDiv = function(id, items) {
+  let parentDiv = getTaskListDiv(id);
+  items.forEach(item => {
+    let attributes = { id: "", className: "task", value: item.description };
+    let itemDiv = generateDiv(attributes);
+    parentDiv.appendChild(itemDiv);
+  });
+  return parentDiv;
 };
 
 const getTODODiv = id => generateDiv({ id, className: "TODO", value: "" });
 
 const getAllDivs = function(id, toDo) {
   let titleDiv = getTitleDiv(id, toDo.title);
-  let descriptionDiv = getDescriptionDiv(id, toDo.description);
-  let addItemDiv = getItemDiv(id);
-  let taskListDiv = getTaskListDiv(id);
+  let descriptionDiv = getdescriptionDiv(id, toDo.description);
+  let itemsDiv = getItemsDiv(id, toDo.items);
+  let addItemDiv = getAddItemDiv(id);
   let TODODiv = getTODODiv(id);
-  return { titleDiv, descriptionDiv, addItemDiv, taskListDiv, TODODiv };
+  return {
+    titleDiv,
+    descriptionDiv,
+    itemsDiv,
+    addItemDiv,
+    TODODiv
+  };
 };
 
 const displayAllTodo = function(toDoList) {
@@ -63,14 +79,14 @@ const displayAllTodo = function(toDoList) {
     let {
       titleDiv,
       descriptionDiv,
+      itemsDiv,
       addItemDiv,
-      taskListDiv,
       TODODiv
     } = getAllDivs(id, toDo);
     TODODiv.appendChild(titleDiv);
     TODODiv.appendChild(descriptionDiv);
     TODODiv.appendChild(addItemDiv);
-    TODODiv.appendChild(taskListDiv);
+    TODODiv.appendChild(itemsDiv);
     titles.appendChild(TODODiv);
   });
 };
@@ -109,6 +125,7 @@ const addItem = function(event) {
     value: item
   });
   getElementById(`taskList_${parentId}`).appendChild(addItemDiv);
+  getElementById(`addTask_${parentId}`).value = "";
 };
 
 const initialize = function() {

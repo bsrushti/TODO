@@ -9,14 +9,6 @@ const TODO = require("../entities/todo");
 
 let users = new Users();
 
-const loadUserDetails = function(users) {
-  const content = fs.readFileSync("./data/userDetail.json", "utf8");
-  users.set(JSON.parse(content));
-  return;
-};
-
-loadUserDetails(users);
-
 const readFile = function(filePath, initialText) {
   if (!fs.existsSync("./data")) {
     fs.mkdirSync("./data");
@@ -29,6 +21,15 @@ const readFile = function(filePath, initialText) {
 
 const credentials = readFile("./data/credentials.json", "[]");
 const cookies = readFile("./data/cookies.json", "[]");
+readFile("./data/userDetail.json", "{}");
+
+const loadUserDetails = function(users) {
+  const content = fs.readFileSync("./data/userDetail.json", "utf8");
+  users.set(JSON.parse(content));
+  return;
+};
+
+loadUserDetails(users);
 
 const app = new App();
 
@@ -59,10 +60,7 @@ const serveFile = (req, res) => {
 
 const isUserValid = function(user) {
   return credentials.some(credential => {
-    return (
-      credential.userName == user.userName &&
-      credential.password == user.password
-    );
+    return credential.userName == user.userName;
   });
 };
 
@@ -79,12 +77,13 @@ const isPasswordCorrect = function(parsedCredentials) {
 
 const getCredentials = function(req, res) {
   let parsedCredentials = parseData(req.body);
-  if (!isPasswordCorrect(parsedCredentials)) {
-    sendResponse(res, "Incorrect Password", 200);
-    return;
-  }
+
   if (!isUserValid(parsedCredentials)) {
     sendResponse(res, invalidUserHTML, 200);
+    return;
+  }
+  if (!isPasswordCorrect(parsedCredentials)) {
+    sendResponse(res, "Incorrect Password", 200);
     return;
   }
   if (!req.headers.cookie) {
@@ -127,7 +126,6 @@ const signUp = function(users, req, res) {
   if (!isAlreadyUser(parsedCredentials.userName)) {
     if (passwordConfirms(parsedCredentials)) {
       let user = new User(parsedCredentials.userName);
-      console.log(user);
       users.addUser(user);
       fs.writeFileSync("./data/userDetail.json", JSON.stringify(users.users));
       saveCredentials(parsedCredentials);
@@ -163,6 +161,7 @@ const addToDoItem = function(req, res) {
   let userTODO = JSON.parse(userDetail);
   userTODO[name][toDoId].items.push(todoItem);
   fs.writeFileSync("./data/userDetail.json", JSON.stringify(userTODO));
+  res.end();
 };
 
 app.use(readBody);
