@@ -18,39 +18,45 @@ const generateDiv = function(attributes) {
 };
 
 const getTitleDiv = (id, title) =>
-  generateDiv({
-    id: `title_${id}`,
-    className: "title",
-    value: title
-  });
+  generateDiv(setAttributes(`title_${id}`, "title", title));
 
-const getdescriptionDiv = (id, description) =>
-  generateDiv({
-    id: `description_${id}`,
-    className: "description",
-    value: description
-  });
+const getDescriptionDiv = (id, description) =>
+  generateDiv(setAttributes(`description_${id}`, "description", description));
 
 const getTaskListDiv = function(id) {
-  return generateDiv({
-    id: `taskList_${id}`,
-    className: "taskList",
-    value: ""
-  });
+  return generateDiv(setAttributes(`taskList_${id}`, "taskList", ""));
+};
+
+const getAddItemHTML = function(id) {
+  return [
+    `<input type='text' placeHolder='enter task'`,
+    `class='insertItem' id='addTask_${id}'/>`,
+    `<button class='plus' id='addItem'`,
+    `onclick='addItem(event)'>&#x2629</button>`
+  ].join(" ");
+};
+
+const setAttributes = function(id, className, value = "") {
+  return { id, className, value };
 };
 
 const getAddItemDiv = function(id) {
-  let addItemDiv = generateDiv({ id: "items", className: "items", value: "" });
-  addItemDiv.innerHTML = `<input type='text' placeHolder='enter task' class='insertItem' id='addTask_${id}'/><button class='plus' id='addItem' onclick='addItem(event)'>&#x2629</button>`;
+  let addItemDiv = generateDiv(setAttributes("items", "items"));
+  addItemDiv.innerHTML = getAddItemHTML(id);
   return addItemDiv;
+};
+
+const appendItemDiv = function(parentDiv, description, id) {
+  let attributes = setAttributes(id, "task", description);
+  let itemDiv = generateDiv(attributes);
+  parentDiv.appendChild(itemDiv);
 };
 
 const getItemsDiv = function(id, items) {
   let parentDiv = getTaskListDiv(id);
+  let counter = generateCounter();
   items.forEach(item => {
-    let attributes = { id: "", className: "task", value: item.description };
-    let itemDiv = generateDiv(attributes);
-    parentDiv.appendChild(itemDiv);
+    appendItemDiv(parentDiv, item.description, counter());
   });
   return parentDiv;
 };
@@ -59,7 +65,7 @@ const getTODODiv = id => generateDiv({ id, className: "TODO", value: "" });
 
 const getAllDivs = function(id, toDo) {
   let titleDiv = getTitleDiv(id, toDo.title);
-  let descriptionDiv = getdescriptionDiv(id, toDo.description);
+  let descriptionDiv = getDescriptionDiv(id, toDo.description);
   let itemsDiv = getItemsDiv(id, toDo.items);
   let addItemDiv = getAddItemDiv(id);
   let TODODiv = getTODODiv(id);
@@ -72,22 +78,24 @@ const getAllDivs = function(id, toDo) {
   };
 };
 
+const displayToDo = function(toDo, TODOs) {
+  let id = toDoCounter();
+  let { titleDiv, descriptionDiv, itemsDiv, addItemDiv, TODODiv } = getAllDivs(
+    id,
+    toDo
+  );
+
+  TODODiv.appendChild(titleDiv);
+  TODODiv.appendChild(descriptionDiv);
+  TODODiv.appendChild(addItemDiv);
+  TODODiv.appendChild(itemsDiv);
+  TODOs.appendChild(TODODiv);
+};
+
 const displayAllTodo = function(toDoList) {
-  let titles = getElementById("titles");
+  const TODOs = getElementById("TODOs");
   toDoList.forEach(toDo => {
-    let id = toDoCounter();
-    let {
-      titleDiv,
-      descriptionDiv,
-      itemsDiv,
-      addItemDiv,
-      TODODiv
-    } = getAllDivs(id, toDo);
-    TODODiv.appendChild(titleDiv);
-    TODODiv.appendChild(descriptionDiv);
-    TODODiv.appendChild(addItemDiv);
-    TODODiv.appendChild(itemsDiv);
-    titles.appendChild(TODODiv);
+    displayToDo(toDo, TODOs);
   });
 };
 
@@ -100,32 +108,46 @@ const writeContentToFile = function(url, content) {
   });
 };
 
-const addToDo = function() {
-  let name = getElementById("name").innerText;
+const getElements = function() {
+  let nameElement = getElementById("name");
   let titleElement = getElementById("title");
   let descriptionElement = getElementById("description");
+  return { nameElement, titleElement, descriptionElement };
+};
+
+const getValues = function(elements) {
+  const { nameElement, titleElement, descriptionElement } = elements;
+  let name = nameElement.innerText;
   let title = titleElement.value;
   let description = descriptionElement.value;
   titleElement.value = "";
   descriptionElement.value = "";
+  return { name, title, description };
+};
+
+const addToDo = function() {
+  let elements = getElements();
+  let { name, title, description } = getValues(elements);
   let content = `{"name":"${name}","title":"${title}","description":"${description}"}`;
   writeContentToFile("/title", content);
-  displayAllTodo([{ title, description }]);
+  let items = [{ description: "" }];
+  displayAllTodo([{ title, description, items }]);
+};
+
+const getItemAttributes = function(event) {
+  let name = getElementById("name").innerText;
+  let id = event.target.parentElement.parentElement.id;
+  let item = getElementById(`addTask_${id}`).value;
+  return { name, id, item };
 };
 
 const addItem = function(event) {
-  let name = getElementById("name").innerText;
-  let parentId = event.target.parentElement.parentElement.id;
-  let item = getElementById(`addTask_${parentId}`).value;
-  let content = `{"name":"${name}","toDoId":"${parentId}","item":"${item}"}`;
+  let { name, id, item } = getItemAttributes(event);
+  let content = `{"name":"${name}","toDoId":"${id}","item":"${item}"}`;
   writeContentToFile("/addItem", content);
-  let addItemDiv = generateDiv({
-    id: itemCounter(),
-    className: "task",
-    value: item
-  });
-  getElementById(`taskList_${parentId}`).appendChild(addItemDiv);
-  getElementById(`addTask_${parentId}`).value = "";
+  let addItemDiv = generateDiv(setAttributes(itemCounter(), "task", item));
+  getElementById(`taskList_${id}`).appendChild(addItemDiv);
+  getElementById(`addTask_${id}`).value = "";
 };
 
 const initialize = function() {
