@@ -22,6 +22,15 @@
   border: 1px solid black;
 }
 
+.saveButton {
+  background-color: green;
+  color: white;
+  position: absolute;
+  right: 3px;
+  bottom: 3px;
+  font-size: 14px;
+}
+
 .insertTitle,
 .insertItem {
   font-size: 20px;
@@ -121,6 +130,7 @@ td {
   height: 50%;
   margin-left: 1%;
   overflow: scroll;
+  position: relative;
 }
 
 .TODOs {

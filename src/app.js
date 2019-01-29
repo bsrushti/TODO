@@ -164,6 +164,18 @@ const addToDoItem = function(req, res) {
   res.end();
 };
 
+const saveItems = function(req, res) {
+  let details = JSON.parse(req.body);
+  let name = details.name;
+  let items = [];
+  details.items.forEach(item => {
+    items.push(JSON.parse(item));
+  });
+  users.users[name][details.id].items = items;
+  fs.writeFileSync("./data/userDetail.json", JSON.stringify(users.users));
+  res.end();
+};
+
 app.use(readBody);
 app.post("/", renderLogout);
 app.post("/loggedIn", getCredentials);
@@ -171,6 +183,7 @@ app.post("/submit", signUp.bind(null, users));
 app.post("/title", addToDo);
 app.post("/userDetail", addToDo);
 app.post("/addItem", addToDoItem);
+app.post("/saveItems", saveItems);
 app.use(serveFile);
 
 module.exports = app.handleRequest.bind(app);

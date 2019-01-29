@@ -49,6 +49,7 @@ const getAddItemDiv = function(id) {
 const appendItemDiv = function(parentDiv, description, id) {
   let attributes = setAttributes(id, "task", description);
   let itemDiv = generateDiv(attributes);
+  itemDiv.setAttribute("contenteditable", "true");
   parentDiv.appendChild(itemDiv);
 };
 
@@ -89,7 +90,31 @@ const displayToDo = function(toDo, TODOs) {
   TODODiv.appendChild(descriptionDiv);
   TODODiv.appendChild(addItemDiv);
   TODODiv.appendChild(itemsDiv);
+  TODODiv.appendChild(saveButton());
   TODOs.appendChild(TODODiv);
+};
+
+const save = function(event) {
+  let name = getElementById("name").innerText;
+  let id = event.target.parentElement.id;
+  let items = getElementById(`taskList_${id}`);
+  items = items.innerText.split("\n");
+  let modifiedItems = [];
+  items.forEach(item => {
+    let itemAttributes = { description: item, done: "false" };
+    modifiedItems.push(JSON.stringify(itemAttributes));
+  });
+  let content = { name: name, id: id, items: modifiedItems };
+  writeContentToFile("/saveItems", JSON.stringify(content));
+};
+
+const saveButton = function() {
+  let button = document.createElement("BUTTON");
+  var text = document.createTextNode("Save");
+  button.className = "saveButton";
+  button.setAttribute("onclick", "save(event)");
+  button.appendChild(text);
+  return button;
 };
 
 const displayAllTodo = function(toDoList) {
@@ -146,6 +171,7 @@ const addItem = function(event) {
   let content = `{"name":"${name}","toDoId":"${id}","item":"${item}"}`;
   writeContentToFile("/addItem", content);
   let addItemDiv = generateDiv(setAttributes(itemCounter(), "task", item));
+  addItemDiv.setAttribute("contenteditable", "true");
   getElementById(`taskList_${id}`).appendChild(addItemDiv);
   getElementById(`addTask_${id}`).value = "";
 };
