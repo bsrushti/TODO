@@ -179,6 +179,16 @@ const saveItems = function(req, res) {
   res.end();
 };
 
+const deleteItem = function(req, res) {
+  let { name, toDoId, itemId } = JSON.parse(req.body);
+  users.users[name][toDoId].items.splice(itemId, 1);
+  fs.writeFileSync(
+    "./data/userDetail.json",
+    JSON.stringify(users.users, null, 2)
+  );
+  res.end();
+};
+
 app.use(readBody);
 app.post("/", renderLogout);
 app.post("/loggedIn", getCredentials);
@@ -187,6 +197,7 @@ app.post("/title", addToDo);
 app.post("/userDetail", addToDo);
 app.post("/addItem", addToDoItem);
 app.post("/saveItems", saveItems);
+app.post("/deleteItem", deleteItem);
 app.use(serveFile);
 
 module.exports = app.handleRequest.bind(app);

@@ -3,7 +3,7 @@ const ToDo = require("./todo");
 class User {
   constructor(userName) {
     this.userName = userName;
-    this.toDo = new ToDo("1", "newTitle", "nothing");
+    this.toDo = new ToDo();
   }
 }
 

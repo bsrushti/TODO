@@ -167,5 +167,10 @@ td {
 
 .checkbox {
   position: absolute;
+  right: 60px;
+}
+
+.delete {
+  position: absolute;
   right: 2px;
 }

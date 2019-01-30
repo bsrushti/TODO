@@ -39,10 +39,9 @@ const createButton = function(className, id, innerHTML) {
   return button;
 };
 
-const createInput = function(id, type, placeHolder, className) {
+const createInput = function(id, type, className) {
   let input = document.createElement("input");
   input.type = type;
-  input.placeHolder = placeHolder;
   input.className = className;
   input.id = id;
   return input;
@@ -50,7 +49,8 @@ const createInput = function(id, type, placeHolder, className) {
 
 const getAddItemDiv = function(id) {
   let addItemDiv = generateDiv(setAttributes("items", "items"));
-  let input = createInput(`addTask_${id}`, "text", "enter task", "insertItem");
+  let input = createInput(`addTask_${id}`, "text", "insertItem");
+  input.setAttribute("placeHolder", "enter task");
   addItemDiv.appendChild(input);
   let button = createButton("plus", "addItem", "&#x2629");
   button.onclick = addItem;
@@ -58,14 +58,29 @@ const getAddItemDiv = function(id) {
   return addItemDiv;
 };
 
-const appendItemDiv = function(parentDiv, item, id) {
-  let attributes = setAttributes(id, "task", item.description);
+const generateItemDiv = function(id, description) {
+  let attributes = setAttributes(id, "task", description);
   let itemDiv = generateDiv(attributes);
   itemDiv.setAttribute("contenteditable", "true");
-  let input = createInput(id, "checkbox", "enter task", "checkbox");
+  return itemDiv;
+};
+
+const getItemDeleteButton = function(id) {
+  let deleteButton = createInput(id, "button", "delete");
+  deleteButton.value = "delete";
+  deleteButton.setAttribute("contenteditable", "false");
+  deleteButton.onclick = deleteItem;
+  return deleteButton;
+};
+
+const appendItemDiv = function(parentDiv, item, id) {
+  let itemDiv = generateItemDiv(id, item.description);
+  let deleteButton = getItemDeleteButton(id);
+  let input = createInput(id, "checkbox", "checkbox");
   if (item.done == "true") {
     input.checked = true;
   }
+  itemDiv.appendChild(deleteButton);
   itemDiv.appendChild(input);
   parentDiv.appendChild(itemDiv);
 };
@@ -188,14 +203,31 @@ const getItemAttributes = function(event) {
   return { name, id, item };
 };
 
+const deleteItem = function(event) {
+  let name = getElementById("name").innerText;
+  let parentElement = event.target.parentElement;
+  let toDoId = parentElement.parentElement.parentElement.id;
+  let itemId = event.target.id;
+  let content = { name, toDoId, itemId };
+  writeContentToFile("/deleteItem", JSON.stringify(content));
+  parentElement.style.display = "none";
+};
+
+const generateAddItemDiv = function(id, item) {
+  let addItemDiv = generateDiv(setAttributes(itemCounter(), "task", item));
+  let deleteButton = getItemDeleteButton(id);
+  let input = createInput(id, "checkbox", "checkbox");
+  addItemDiv.setAttribute("contenteditable", "true");
+  addItemDiv.appendChild(deleteButton);
+  addItemDiv.appendChild(input);
+  return addItemDiv;
+};
+
 const addItem = function(event) {
   let { name, id, item } = getItemAttributes(event);
   let content = { name: name, toDoId: id, item: item };
   writeContentToFile("/addItem", JSON.stringify(content));
-  let addItemDiv = generateDiv(setAttributes(itemCounter(), "task", item));
-  let input = createInput(id, "checkbox", "", "checkbox");
-  addItemDiv.setAttribute("contenteditable", "true");
-  addItemDiv.appendChild(input);
+  let addItemDiv = generateAddItemDiv(id, item);
   getElementById(`taskList_${id}`).appendChild(addItemDiv);
   getElementById(`addTask_${id}`).value = "";
 };
