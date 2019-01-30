@@ -43,11 +43,23 @@ readFile(USER_DETAILS_PATH, "{}");
 
 const loadUserDetails = function(users) {
   const content = fs.readFileSync(USER_DETAILS_PATH, ENCODING);
-  users.set(JSON.parse(content));
-  return;
+  return JSON.parse(content);
 };
 
-loadUserDetails(users);
+let userAccounts = loadUserDetails(users);
+
+const loadInstances = function() {
+  Object.keys(userAccounts).forEach(userName => {
+    userAccounts[userName].forEach(userToDo => {
+      let { title, description, items } = userToDo;
+      let toDo = new TODO(title, description, items);
+      let user = new User(userName, []);
+      user.addToDo(toDo);
+      users.addUser(user);
+    });
+  });
+};
+loadInstances();
 
 const app = new App();
 
@@ -185,21 +197,24 @@ const saveItems = function(req, res) {
   items.forEach(item => {
     modifiedItems.push(JSON.parse(item));
   });
-  users.users[name][id].items = modifiedItems;
+  let user = new User(name, users.users[name]);
+  user.editToDo(id, modifiedItems);
   fs.writeFileSync(USER_DETAILS_PATH, JSON.stringify(users.users, null, 2));
   res.end();
 };
 
 const deleteItem = function(req, res) {
   let { name, toDoId, itemId } = JSON.parse(req.body);
-  users.users[name][toDoId].items.splice(itemId, 1);
+  let user = new User(name, users.users[name]);
+  user.toDo[toDoId].deleteItem(itemId);
   fs.writeFileSync(USER_DETAILS_PATH, JSON.stringify(users.users, null, 2));
   res.end();
 };
 
 const deleteToDo = function(req, res) {
   let { name, toDoId } = JSON.parse(req.body);
-  users.users[name].splice(toDoId, 1);
+  let user = new User(name, users.users[name]);
+  user.removeToDo(toDoId);
   fs.writeFileSync(USER_DETAILS_PATH, JSON.stringify(users.users, null, 2));
   res.end();
 };

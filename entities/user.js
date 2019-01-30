@@ -1,9 +1,21 @@
 const ToDo = require("./todo");
 
 class User {
-  constructor(userName) {
+  constructor(userName, userToDo = []) {
     this.userName = userName;
-    this.toDo = new ToDo();
+    this.toDo = userToDo;
+  }
+
+  addToDo(userToDo) {
+    this.toDo.push(userToDo);
+  }
+
+  removeToDo(id) {
+    this.toDo.splice(id, 1);
+  }
+
+  editToDo(id, toDo) {
+    this.toDo[id] = toDo;
   }
 }
 
@@ -17,7 +29,7 @@ class Users {
   }
 
   addUser(user) {
-    this.users[user.userName] = [];
+    this.users[user.userName] = user.toDo;
   }
 }
 
