@@ -75,7 +75,14 @@ const isPasswordCorrect = function(parsedCredentials) {
   return currentUser.password == parsedCredentials.password;
 };
 
-const getCredentials = function(req, res) {
+const setCookie = function(res, userName) {
+  let cookie = `${userName}:${new Date().getTime()}`;
+  cookies.push(cookie);
+  res.setHeader("Set-Cookie", cookie);
+  fs.writeFile("./data/cookies.json", JSON.stringify(cookies), err => {});
+};
+
+const login = function(req, res) {
   let parsedCredentials = parseData(req.body);
 
   if (!isUserValid(parsedCredentials)) {
@@ -87,11 +94,8 @@ const getCredentials = function(req, res) {
     return;
   }
   if (!req.headers.cookie) {
-    let cookie = `${parsedCredentials.userName}:${new Date().getTime()}`;
-    cookies.push(cookie);
-    res.setHeader("Set-Cookie", cookie);
+    setCookie(res, parsedCredentials.userName);
   }
-  fs.writeFile("./data/cookies.json", JSON.stringify(cookies), err => {});
   let finalHTML = homeHTML.replace("##namehere##", parsedCredentials.userName);
   sendResponse(res, finalHTML, 200);
 };
@@ -121,7 +125,7 @@ const saveCredentials = function(parsedCredentials) {
 const passwordConfirms = parsedCredentials =>
   parsedCredentials.password == parsedCredentials.confirmPassword;
 
-const signUp = function(users, req, res) {
+const signUp = function(req, res) {
   let parsedCredentials = parseData(req.body);
   if (!isAlreadyUser(parsedCredentials.userName)) {
     if (passwordConfirms(parsedCredentials)) {
@@ -165,13 +169,12 @@ const addToDoItem = function(req, res) {
 };
 
 const saveItems = function(req, res) {
-  let details = JSON.parse(req.body);
-  let name = details.name;
-  let items = [];
-  details.items.forEach(item => {
-    items.push(JSON.parse(item));
+  let { name, id, items } = JSON.parse(req.body);
+  let modifiedItems = [];
+  items.forEach(item => {
+    modifiedItems.push(JSON.parse(item));
   });
-  users.users[name][details.id].items = items;
+  users.users[name][id].items = modifiedItems;
   fs.writeFileSync(
     "./data/userDetail.json",
     JSON.stringify(users.users, null, 2)
@@ -201,8 +204,8 @@ const deleteToDo = function(req, res) {
 
 app.use(readBody);
 app.post("/", renderLogout);
-app.post("/loggedIn", getCredentials);
-app.post("/submit", signUp.bind(null, users));
+app.post("/loggedIn", login);
+app.post("/submit", signUp);
 app.post("/title", addToDo);
 app.post("/userDetail", addToDo);
 app.post("/addItem", addToDoItem);
