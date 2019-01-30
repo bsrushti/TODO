@@ -111,18 +111,30 @@ const getAllDivs = function(id, toDo) {
   };
 };
 
+const deleteToDo = function(event) {
+  let toDo = event.target.parentElement;
+  let name = getElementById("name").innerText;
+  let toDoId = event.target.id;
+  let content = { name, toDoId };
+  writeContentToFile("/deleteToDo", JSON.stringify(content));
+  toDo.style.display = "none";
+};
+
 const displayToDo = function(toDo, TODOs) {
   let id = toDoCounter();
   let { titleDiv, descriptionDiv, itemsDiv, addItemDiv, TODODiv } = getAllDivs(
     id,
     toDo
   );
+  let deleteToDoButton = createButton("deleteToDo", id, "&times");
+  deleteToDoButton.onclick = deleteToDo;
   let saveButton = createButton("saveButton", "", "Save");
   saveButton.onclick = save;
   TODODiv.appendChild(titleDiv);
   TODODiv.appendChild(descriptionDiv);
   TODODiv.appendChild(addItemDiv);
   TODODiv.appendChild(itemsDiv);
+  TODODiv.appendChild(deleteToDoButton);
   TODODiv.appendChild(saveButton);
   TODOs.appendChild(TODODiv);
 };

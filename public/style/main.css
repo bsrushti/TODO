@@ -26,7 +26,7 @@
   background-color: green;
   color: white;
   position: absolute;
-  right: 3px;
+  right: 25px;
   top: 2px;
   font-size: 14px;
 }
@@ -173,4 +173,11 @@ td {
 .delete {
   position: absolute;
   right: 2px;
+}
+
+.deleteToDo {
+  position: absolute;
+  right: 2px;
+  top: 2px;
+  font-size: 14px;
 }
