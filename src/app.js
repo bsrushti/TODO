@@ -50,17 +50,17 @@ let userAccounts = loadUserDetails(users);
 
 const loadInstances = function() {
   Object.keys(userAccounts).forEach(userName => {
+    let user = new User(userName);
     userAccounts[userName].forEach(userToDo => {
       let { title, description, items } = userToDo;
       let toDo = new TODO(title, description, items);
-      let user = new User(userName, []);
       user.addToDo(toDo);
-      users.addUser(user);
     });
+    users.addUser(user);
   });
 };
-loadInstances();
 
+loadInstances();
 const app = new App();
 
 const readBody = (req, res, next) => {
@@ -166,28 +166,26 @@ const signUp = function(req, res) {
 };
 
 const addToDo = function(req, res) {
-  let userDetail = fs.readFileSync(USER_DETAILS_PATH).toString();
   if (req.url == "/userDetail") {
-    sendResponse(res, userDetail, OK_200);
+    sendResponse(res, JSON.stringify(users.users), OK_200);
     return;
   }
   let details = JSON.parse(req.body);
   let { name, title, description } = details;
-  let user = JSON.parse(userDetail);
   let todo = new TODO(title, description);
-  user[name].push(todo);
-  fs.writeFileSync(USER_DETAILS_PATH, JSON.stringify(user));
-  sendResponse(res, JSON.stringify(user), OK_200);
+  let user = new User(name, users.users[name]);
+  user.addToDo(todo);
+  fs.writeFileSync(USER_DETAILS_PATH, JSON.stringify(users.users, null, 2));
+  res.end();
 };
 
 const addToDoItem = function(req, res) {
   let details = JSON.parse(req.body);
   let { name, toDoId, item } = details;
   let todoItem = { description: item, done: "false" };
-  let userDetail = fs.readFileSync(USER_DETAILS_PATH).toString();
-  let userTODO = JSON.parse(userDetail);
-  userTODO[name][toDoId].items.push(todoItem);
-  fs.writeFileSync(USER_DETAILS_PATH, JSON.stringify(userTODO, null, 2));
+  let user = new User(name, users.users[name]);
+  user.toDo[toDoId].addItem(todoItem);
+  fs.writeFileSync(USER_DETAILS_PATH, JSON.stringify(users.users, null, 2));
   res.end();
 };
 

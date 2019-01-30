@@ -15,7 +15,7 @@ class User {
   }
 
   editToDo(id, toDo) {
-    this.toDo[id] = toDo;
+    this.toDo[id].items = toDo;
   }
 }
 
