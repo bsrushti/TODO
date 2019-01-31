@@ -9,7 +9,8 @@ const {
   deleteItem,
   deleteToDo,
   serveFile,
-  loadInstances
+  loadInstances,
+  handleSession
 } = require("./handlers");
 
 const App = require("./express");
@@ -17,8 +18,9 @@ loadInstances();
 const app = new App();
 
 app.use(readBody);
+app.get("/", handleSession);
 app.post("/", renderLogout);
-app.post("/loggedIn", login);
+app.post("/myToDo", login);
 app.post("/submit", signUp);
 app.post("/addToDo", addToDo);
 app.post("/userDetail", addToDo);

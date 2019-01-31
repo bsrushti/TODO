@@ -15,7 +15,7 @@ const {
   INCORRECT_PASSWORD,
   NAME_CONSTANT,
   EXPIRY_DATE,
-  EXISTING_USER,
+  EXISTING_USER
 } = require("./constants");
 
 const { sendResponse, parseData, getPath, confirmPassword } = require("./util");
@@ -110,7 +110,6 @@ const isPasswordCorrect = function(parsedCredentials) {
 
 const login = function(req, res) {
   let parsedCredentials = parseData(req.body);
-
   if (!isUserValid(parsedCredentials)) {
     sendResponse(res, invalidUserHTML, OK_200);
     return;
@@ -243,6 +242,26 @@ const deleteToDo = function(req, res) {
   res.end();
 };
 
+const loginCurrentUser = function(req, res) {
+  let currentCookie = req.headers.cookie;
+  let userName = currentCookie.split(":")[0];
+  let currentUser = credentials.filter(
+    credential => credential.userName == userName
+  );
+  let userPassword = currentUser[0].password;
+  let userCredential = `userName=${userName}&password=${userPassword}`;
+  req.body = userCredential;
+  login(req, res);
+};
+
+const handleSession = function(req, res) {
+  if (!req.headers.cookie) {
+    sendResponse(res, indexHTML, 200);
+    return;
+  }
+  loginCurrentUser(req, res);
+};
+
 module.exports = {
   readBody,
   renderLogout,
@@ -254,5 +273,6 @@ module.exports = {
   deleteItem,
   deleteToDo,
   serveFile,
-  loadInstances
+  loadInstances,
+  handleSession
 };
