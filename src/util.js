@@ -1,3 +1,5 @@
+const { PUBLIC_DIR_PATH, INDEX_PAGE_PATH } = require("./constants");
+
 const sendResponse = function(res, content, status) {
   res.statusCode = status;
   res.write(content);
@@ -15,7 +17,17 @@ const parseData = text => {
   return args;
 };
 
+const getPath = url => {
+  if (url == "/") return INDEX_PAGE_PATH;
+  return PUBLIC_DIR_PATH + url;
+};
+
+const confirmPassword = parsedCredentials =>
+  parsedCredentials.password == parsedCredentials.confirmPassword;
+
 module.exports = {
   sendResponse,
-  parseData
+  parseData,
+  getPath,
+  confirmPassword
 };

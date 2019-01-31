@@ -148,10 +148,16 @@ td {
 .title {
   font-weight: bold;
   font-size: 20px;
+  margin-left: 5px;
+  width: 420px;
+  word-wrap:break-word;
 }
 
 .description {
   margin-bottom: 20px;
+  margin-left: 5px;
+  width: 420px;
+  word-wrap:break-word;
 }
 
 .backToLogin {
@@ -194,4 +200,9 @@ td {
   font-size: 22px;
   right: 160px;
   width: auto;
+}
+
+.task {
+  width: 420px;
+  margin-left: 10px;
 }

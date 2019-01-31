@@ -16,9 +16,10 @@ const {
   NAME_CONSTANT,
   EXPIRY_DATE,
   EXISTING_USER,
-  PUBLIC_DIR_PATH
 } = require("./constants");
-const { sendResponse, parseData } = require("./util");
+
+const { sendResponse, parseData, getPath, confirmPassword } = require("./util");
+
 const homeHTML = fs.readFileSync(HOME_PAGE_PATH, ENCODING);
 const indexHTML = fs.readFileSync(INDEX_PAGE_PATH, ENCODING);
 const invalidUserHTML = fs.readFileSync(INVALID_USER_PATH, ENCODING);
@@ -72,11 +73,6 @@ const readBody = (req, res, next) => {
   });
 };
 
-const getPath = url => {
-  if (url == "/") return INDEX_PAGE_PATH;
-  return PUBLIC_DIR_PATH + url;
-};
-
 const serveFile = (req, res) => {
   let fileName = getPath(req.url);
   fs.readFile(fileName, function(err, contents) {
@@ -86,6 +82,13 @@ const serveFile = (req, res) => {
     }
     sendResponse(res, contents, OK_200);
   });
+};
+
+const setCookie = function(res, userName) {
+  let cookie = `${userName}:${new Date().getTime()}`;
+  cookies.push(cookie);
+  res.setHeader("Set-Cookie", cookie);
+  fs.writeFile(COOKIES_PATH, JSON.stringify(cookies), err => {});
 };
 
 const isUserValid = function(user) {
@@ -103,13 +106,6 @@ const isPasswordCorrect = function(parsedCredentials) {
     credential => credential.userName == parsedCredentials.userName
   )[0];
   return currentUser.password == parsedCredentials.password;
-};
-
-const setCookie = function(res, userName) {
-  let cookie = `${userName}:${new Date().getTime()}`;
-  cookies.push(cookie);
-  res.setHeader("Set-Cookie", cookie);
-  fs.writeFile(COOKIES_PATH, JSON.stringify(cookies), err => {});
 };
 
 const login = function(req, res) {
@@ -145,9 +141,6 @@ const saveCredentials = function(parsedCredentials) {
   return;
 };
 
-const passwordConfirms = parsedCredentials =>
-  parsedCredentials.password == parsedCredentials.confirmPassword;
-
 const addNewUser = function(credentials) {
   let user = new User(credentials.userName);
   users.addUser(user);
@@ -159,7 +152,7 @@ const addNewUser = function(credentials) {
 const signUp = function(req, res) {
   let parsedCredentials = parseData(req.body);
   if (!isAlreadyUser(parsedCredentials.userName)) {
-    if (passwordConfirms(parsedCredentials)) {
+    if (confirmPassword(parsedCredentials)) {
       addNewUser(parsedCredentials);
       sendResponse(res, indexHTML, OK_200);
       return;
@@ -242,6 +235,7 @@ const deleteUserTodo = function(toDoDetails) {
   user.removeToDo(toDoId);
   return;
 };
+
 const deleteToDo = function(req, res) {
   let toDoDetails = JSON.parse(req.body);
   deleteUserTodo(toDoDetails);
