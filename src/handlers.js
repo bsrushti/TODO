@@ -148,14 +148,19 @@ const saveCredentials = function(parsedCredentials) {
 const passwordConfirms = parsedCredentials =>
   parsedCredentials.password == parsedCredentials.confirmPassword;
 
+const addNewUser = function(credentials) {
+  let user = new User(credentials.userName);
+  users.addUser(user);
+  fs.writeFileSync(USER_DETAILS_PATH, JSON.stringify(users.users));
+  saveCredentials(credentials);
+  return;
+};
+
 const signUp = function(req, res) {
   let parsedCredentials = parseData(req.body);
   if (!isAlreadyUser(parsedCredentials.userName)) {
     if (passwordConfirms(parsedCredentials)) {
-      let user = new User(parsedCredentials.userName);
-      users.addUser(user);
-      fs.writeFileSync(USER_DETAILS_PATH, JSON.stringify(users.users));
-      saveCredentials(parsedCredentials);
+      addNewUser(parsedCredentials);
       sendResponse(res, indexHTML, OK_200);
       return;
     }
