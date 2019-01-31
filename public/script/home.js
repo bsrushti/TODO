@@ -52,7 +52,7 @@ const getAddItemDiv = function(id) {
   let input = createInput(`addTask_${id}`, "text", "insertItem");
   input.setAttribute("placeHolder", "enter task");
   addItemDiv.appendChild(input);
-  let button = createButton("plus", "addItem", "&#x2629");
+  let button = createButton("plus", "addItem", `<i class="fas fa-plus"></i>`);
   button.onclick = addItem;
   addItemDiv.appendChild(button);
   return addItemDiv;
