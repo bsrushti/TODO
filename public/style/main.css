@@ -22,6 +22,11 @@
   border: 1px solid black;
 }
 
+.addToDoSymbol {
+  position: absolute;
+  bottom: 6px;
+}
+
 .saveButton {
   background-color: green;
   color: white;
@@ -43,7 +48,7 @@
   position: absolute;
   top: 15%;
   left: 40%;
-  width: 40%;
+  width: 400px;
 }
 
 .container {
