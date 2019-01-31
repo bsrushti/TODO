@@ -20,7 +20,7 @@ app.use(readBody);
 app.post("/", renderLogout);
 app.post("/loggedIn", login);
 app.post("/submit", signUp);
-app.post("/title", addToDo);
+app.post("/addToDo", addToDo);
 app.post("/userDetail", addToDo);
 app.post("/addItem", addToDoItem);
 app.post("/saveItems", saveItems);
