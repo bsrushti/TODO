@@ -15,6 +15,11 @@
   font-size: 20px;
 }
 
+.deleteItem {
+  position: absolute;
+  right: 10px;
+  font-size: 15px;
+}
 .addToDoSymbol,
 .plus {
   font-size: 19px;
@@ -87,7 +92,7 @@
 .login {
   font-size: 18px;
   background-color: #43677d;
-  height: 40px;
+  height: 4˝0px;
   color: white;
   position: absolute;
   top: 250px;
@@ -150,14 +155,14 @@ td {
   font-size: 20px;
   margin-left: 5px;
   width: 420px;
-  word-wrap:break-word;
+  word-wrap: break-word;
 }
 
 .description {
   margin-bottom: 20px;
   margin-left: 5px;
   width: 420px;
-  word-wrap:break-word;
+  word-wrap: break-word;
 }
 
 .backToLogin {
@@ -179,7 +184,7 @@ td {
 
 .checkbox {
   position: absolute;
-  right: 60px;
+  right: 40px;
 }
 
 .delete {
@@ -192,6 +197,7 @@ td {
   right: 2px;
   top: 2px;
   font-size: 14px;
+  height: 20px;
 }
 
 .user {
@@ -205,4 +211,5 @@ td {
 .task {
   width: 420px;
   margin-left: 10px;
+  margin-bottom: 3px;
 }

@@ -66,9 +66,11 @@ const generateItemDiv = function(id, description) {
 };
 
 const getItemDeleteButton = function(id) {
-  let deleteButton = createInput(id, "button", "delete");
-  deleteButton.value = "delete";
-  deleteButton.setAttribute("contenteditable", "false");
+  let deleteButton = createButton(
+    "deleteItem",
+    id,
+    "<i class='fas fa-trash-alt'></i>"
+  );
   deleteButton.onclick = deleteItem;
   return deleteButton;
 };
@@ -112,7 +114,7 @@ const getAllDivs = function(id, toDo) {
 };
 
 const deleteToDo = function(event) {
-  let toDo = event.target.parentElement;
+  let toDo = event.target.parentElement.parentElement;
   let name = getElementById("name").innerText;
   let toDoId = event.target.id;
   let content = { name, toDoId };
@@ -126,7 +128,11 @@ const displayToDo = function(toDo, TODOs) {
     id,
     toDo
   );
-  let deleteToDoButton = createButton("deleteToDo", id, "&times");
+  let deleteToDoButton = createButton(
+    "deleteToDo",
+    id,
+    "<i class='fas fa-trash-alt'></i>"
+  );
   deleteToDoButton.onclick = deleteToDo;
   let saveButton = createButton("saveButton", "", "Save");
   saveButton.onclick = save;
@@ -218,11 +224,11 @@ const getItemAttributes = function(event) {
 const deleteItem = function(event) {
   let name = getElementById("name").innerText;
   let parentElement = event.target.parentElement;
-  let toDoId = parentElement.parentElement.parentElement.id;
+  let toDoId = parentElement.parentElement.parentElement.parentElement.id;
   let itemId = event.target.id;
   let content = { name, toDoId, itemId };
   writeContentToFile("/deleteItem", JSON.stringify(content));
-  parentElement.style.display = "none";
+  parentElement.parentElement.style.display = "none";
 };
 
 const generateAddItemDiv = function(id, item) {
