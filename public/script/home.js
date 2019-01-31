@@ -204,7 +204,7 @@ const addToDo = function() {
   let { name, title, description } = getToDoValues(elements);
   let content = { name: name, title: title, description: description };
   writeContentToFile("/title", JSON.stringify(content));
-  let items = [{ description: "" }];
+  let items = [];
   displayAllTodo([{ title, description, items }]);
 };
 
