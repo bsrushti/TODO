@@ -27,11 +27,19 @@ const invalidUserHTML = fs.readFileSync(INVALID_USER_PATH, ENCODING);
 
 let users = new Users();
 
+const isDirectoryExists = function(directoryPath) {
+  return fs.existsSync(directoryPath);
+};
+
+const isFileExists = function(filePath) {
+  return fs.existsSync(filePath);
+};
+
 const readFile = function(filePath, initialText) {
-  if (!fs.existsSync(DATA_DIR)) {
+  if (!isDirectoryExists(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR);
   }
-  if (!fs.existsSync(filePath)) {
+  if (!isFileExists(filePath)) {
     fs.writeFileSync(filePath, initialText, err => {});
   }
   return JSON.parse(fs.readFileSync(filePath));
@@ -39,16 +47,10 @@ const readFile = function(filePath, initialText) {
 
 const credentials = readFile(CREDENTIALS_PATH, "[]");
 const cookies = readFile(COOKIES_PATH, "[]");
-readFile(USER_DETAILS_PATH, "{}");
-
-const loadUserDetails = function(users) {
-  const content = fs.readFileSync(USER_DETAILS_PATH, ENCODING);
-  return JSON.parse(content);
-};
-
-let userAccounts = loadUserDetails(users);
+const userDetail = readFile(USER_DETAILS_PATH, "{}");
 
 const loadInstances = function() {
+  let userAccounts = userDetail;
   Object.keys(userAccounts).forEach(userName => {
     let user = new User(userName);
     userAccounts[userName].forEach(userToDo => {
