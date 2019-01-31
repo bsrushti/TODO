@@ -15,6 +15,7 @@
   font-size: 20px;
 }
 
+.addToDoSymbol,
 .plus {
   font-size: 19px;
   background-color: green;
@@ -185,4 +186,12 @@ td {
   right: 2px;
   top: 2px;
   font-size: 14px;
+}
+
+.user {
+  color: white;
+  position: absolute;
+  font-size: 22px;
+  right: 160px;
+  width: auto;
 }
