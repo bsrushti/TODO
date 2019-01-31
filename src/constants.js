@@ -13,6 +13,7 @@ const INCORRECT_PASSWORD = "Incorrect Password";
 const NAME_CONSTANT = "##namehere##";
 const EXPIRY_DATE = "expires = Thu, 01 Jan 1970 00:00:00 GMT";
 const EXISTING_USER = "already a user,please login";
+const PUBLIC_DIR_PATH = "./public/";
 
 module.exports = {
   OK_200,
@@ -29,5 +30,6 @@ module.exports = {
   INCORRECT_PASSWORD,
   NAME_CONSTANT,
   EXPIRY_DATE,
-  EXISTING_USER
+  EXISTING_USER,
+  PUBLIC_DIR_PATH
 };

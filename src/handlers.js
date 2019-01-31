@@ -15,7 +15,8 @@ const {
   INCORRECT_PASSWORD,
   NAME_CONSTANT,
   EXPIRY_DATE,
-  EXISTING_USER
+  EXISTING_USER,
+  PUBLIC_DIR_PATH
 } = require("./constants");
 const { sendResponse, parseData } = require("./util");
 const homeHTML = fs.readFileSync(HOME_PAGE_PATH, ENCODING);
@@ -42,13 +43,12 @@ const readFile = function(filePath, initialText) {
 
 const credentials = readFile(CREDENTIALS_PATH, "[]");
 const cookies = readFile(COOKIES_PATH, "[]");
+const userDetail = readFile(USER_DETAILS_PATH, "{}");
 
 const { User, Users } = require("../entities/user");
 const TODO = require("../entities/todo");
 
 let users = new Users();
-
-const userDetail = readFile(USER_DETAILS_PATH, "{}");
 
 const loadInstances = function() {
   let userAccounts = userDetail;
@@ -74,7 +74,7 @@ const readBody = (req, res, next) => {
 
 const getPath = url => {
   if (url == "/") return INDEX_PAGE_PATH;
-  return `./public/${url}`;
+  return PUBLIC_DIR_PATH + url;
 };
 
 const serveFile = (req, res) => {
@@ -164,10 +164,18 @@ const signUp = function(req, res) {
       sendResponse(res, indexHTML, OK_200);
       return;
     }
-    sendResponse(res, indexHTML, OK_200);
+    sendResponse(res, INCORRECT_PASSWORD, OK_200);
     return;
   }
   sendResponse(res, EXISTING_USER, OK_200);
+};
+
+const addToDoToUser = function(toDoDetails) {
+  let { name, title, description } = toDoDetails;
+  let todo = new TODO(title, description);
+  let user = new User(name, users.users[name]);
+  user.addToDo(todo);
+  return;
 };
 
 const addToDo = function(req, res) {
@@ -175,49 +183,68 @@ const addToDo = function(req, res) {
     sendResponse(res, JSON.stringify(users.users), OK_200);
     return;
   }
-  let details = JSON.parse(req.body);
-  let { name, title, description } = details;
-  let todo = new TODO(title, description);
-  let user = new User(name, users.users[name]);
-  user.addToDo(todo);
+  let toDoDetails = JSON.parse(req.body);
+  addToDoToUser(toDoDetails);
   fs.writeFileSync(USER_DETAILS_PATH, JSON.stringify(users.users, null, 2));
   res.end();
 };
 
-const addToDoItem = function(req, res) {
-  let details = JSON.parse(req.body);
-  let { name, toDoId, item } = details;
+const addItemToUserToDo = function(itemDetails) {
+  let { name, toDoId, item } = itemDetails;
   let todoItem = { description: item, done: "false" };
   let user = new User(name, users.users[name]);
   user.toDo[toDoId].addItem(todoItem);
+  return;
+};
+
+const addToDoItem = function(req, res) {
+  let itemDetails = JSON.parse(req.body);
+  addItemToUserToDo(itemDetails);
   fs.writeFileSync(USER_DETAILS_PATH, JSON.stringify(users.users, null, 2));
   res.end();
+};
+
+const saveEditedItemsToUserToDo = function(itemsDetails) {
+  let { name, id, items } = itemsDetails;
+  let editedItems = [];
+  items.forEach(item => {
+    editedItems.push(JSON.parse(item));
+  });
+  let user = new User(name, users.users[name]);
+  user.editToDo(id, editedItems);
+  return;
 };
 
 const saveItems = function(req, res) {
-  let { name, id, items } = JSON.parse(req.body);
-  let modifiedItems = [];
-  items.forEach(item => {
-    modifiedItems.push(JSON.parse(item));
-  });
-  let user = new User(name, users.users[name]);
-  user.editToDo(id, modifiedItems);
+  let itemsDetails = JSON.parse(req.body);
+  saveEditedItemsToUserToDo(itemsDetails);
   fs.writeFileSync(USER_DETAILS_PATH, JSON.stringify(users.users, null, 2));
   res.end();
+};
+
+const deleteItemFromUserTodo = function(itemDetails) {
+  let { name, toDoId, itemId } = itemDetails;
+  let user = new User(name, users.users[name]);
+  user.toDo[toDoId].deleteItem(itemId);
+  return;
 };
 
 const deleteItem = function(req, res) {
-  let { name, toDoId, itemId } = JSON.parse(req.body);
-  let user = new User(name, users.users[name]);
-  user.toDo[toDoId].deleteItem(itemId);
+  let itemsDetails = JSON.parse(req.body);
+  deleteItemFromUserTodo(itemsDetails);
   fs.writeFileSync(USER_DETAILS_PATH, JSON.stringify(users.users, null, 2));
   res.end();
 };
 
-const deleteToDo = function(req, res) {
-  let { name, toDoId } = JSON.parse(req.body);
+const deleteUserTodo = function(toDoDetails) {
+  let { name, toDoId } = toDoDetails;
   let user = new User(name, users.users[name]);
   user.removeToDo(toDoId);
+  return;
+};
+const deleteToDo = function(req, res) {
+  let toDoDetails = JSON.parse(req.body);
+  deleteUserTodo(toDoDetails);
   fs.writeFileSync(USER_DETAILS_PATH, JSON.stringify(users.users, null, 2));
   res.end();
 };
