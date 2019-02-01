@@ -196,7 +196,7 @@ td {
   position: absolute;
   right: 2px;
   top: 2px;
-  font-size: 14px;
+  font-size: 23px;
   height: 20px;
 }
 
@@ -212,4 +212,8 @@ td {
   width: 420px;
   margin-left: 10px;
   margin-bottom: 3px;
+}
+
+button:focus {
+  outline: none;
 }

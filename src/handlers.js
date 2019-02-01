@@ -198,10 +198,7 @@ const addToDoItem = function(req, res) {
 
 const saveEditedItemsToUserToDo = function(itemsDetails) {
   let { name, id, items } = itemsDetails;
-  let editedItems = [];
-  items.forEach(item => {
-    editedItems.push(JSON.parse(item));
-  });
+  let editedItems = items.map(item => JSON.parse(item));
   let user = new User(name, users.users[name]);
   user.editToDo(id, editedItems);
   return;
