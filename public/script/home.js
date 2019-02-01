@@ -52,7 +52,7 @@ const getAddItemDiv = function(id) {
   let input = createInput(`addTask_${id}`, "text", "insertItem");
   input.setAttribute("placeHolder", "enter task");
   addItemDiv.appendChild(input);
-  let button = createButton("plus", "addItem", `<i class="fas fa-plus"></i>`);
+  let button = createButton("plus", "addItem", `&plus;`);
   button.onclick = addItem;
   addItemDiv.appendChild(button);
   return addItemDiv;
@@ -66,11 +66,9 @@ const generateItemDiv = function(id, description) {
 };
 
 const getItemDeleteButton = function(id) {
-  let deleteButton = createButton(
-    "deleteItem",
-    id,
-    "<i class='fas fa-trash-alt'></i>"
-  );
+  let deleteButton = document.createElement("i");
+  deleteButton.id = id;
+  deleteButton.className = "fas fa-trash-alt";
   deleteButton.onclick = deleteItem;
   return deleteButton;
 };
@@ -153,15 +151,16 @@ const getItemsValue = function(event) {
 };
 
 const getModifiedItems = function(items) {
-  let itemList = items.innerText.split("\n");
   let modifiedItems = [];
-  for (let index = 0; index < items.childNodes.length; index++) {
-    let itemAttributes = { description: itemList[index], done: "false" };
-    if (items.childNodes[index].lastChild.checked) {
-      itemAttributes.done = "true";
+  items.childNodes.forEach(childNode => {
+    if (childNode.style.display == "") {
+      let itemAttributes = { description: childNode.innerText, done: "false" };
+      if (childNode.lastChild.checked) {
+        itemAttributes.done = "true";
+      }
+      modifiedItems.push(JSON.stringify(itemAttributes));
     }
-    modifiedItems.push(JSON.stringify(itemAttributes));
-  }
+  });
   return modifiedItems;
 };
 
@@ -224,15 +223,13 @@ const getItemAttributes = function(event) {
 const deleteItem = function(event) {
   let name = getElementById("name").innerText;
   let parentElement = event.target.parentElement;
-  let toDoId = parentElement.parentElement.parentElement.parentElement.id;
-  let itemId = event.target.parentElement.parentElement.id;
-  let content = { name, toDoId, itemId };
-  writeContentToFile("/deleteItem", JSON.stringify(content));
-  parentElement.parentElement.style.display = "none";
+  let toDoId = parentElement.parentElement.parentElement.id;
+  let itemId = event.target.parentElement.id;
+  parentElement.style.display = "none";
 };
 
 const generateAddItemDiv = function(id, item) {
-  let itemId = itemCounter();
+  let itemId = getElementById(`taskList_${id}`).childNodes.length;
   let addItemDiv = generateDiv(setAttributes(itemId, "task", item));
   let deleteButton = getItemDeleteButton(id);
   let input = createInput(id, "checkbox", "checkbox");
