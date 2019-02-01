@@ -116,7 +116,7 @@ const getAllDivs = function(id, toDo) {
 const deleteToDo = function(event) {
   let toDo = event.target.parentElement.parentElement;
   let name = getElementById("name").innerText;
-  let toDoId = event.target.id;
+  let toDoId = toDo.id;
   let content = { name, toDoId };
   writeContentToFile("/deleteToDo", JSON.stringify(content));
   toDo.style.display = "none";
@@ -225,14 +225,15 @@ const deleteItem = function(event) {
   let name = getElementById("name").innerText;
   let parentElement = event.target.parentElement;
   let toDoId = parentElement.parentElement.parentElement.parentElement.id;
-  let itemId = event.target.id;
+  let itemId = event.target.parentElement.parentElement.id;
   let content = { name, toDoId, itemId };
   writeContentToFile("/deleteItem", JSON.stringify(content));
   parentElement.parentElement.style.display = "none";
 };
 
 const generateAddItemDiv = function(id, item) {
-  let addItemDiv = generateDiv(setAttributes(itemCounter(), "task", item));
+  let itemId = itemCounter();
+  let addItemDiv = generateDiv(setAttributes(itemId, "task", item));
   let deleteButton = getItemDeleteButton(id);
   let input = createInput(id, "checkbox", "checkbox");
   addItemDiv.setAttribute("contenteditable", "true");
