@@ -65,17 +65,17 @@ const generateItemDiv = function(id, description) {
   return itemDiv;
 };
 
-const getItemDeleteButton = function(id) {
+const getDeleteButton = function(id, className) {
   let deleteButton = document.createElement("i");
   deleteButton.id = id;
-  deleteButton.className = "fas fa-trash-alt";
-  deleteButton.onclick = deleteItem;
+  deleteButton.className = `fas fa-trash-alt ${className}`;
   return deleteButton;
 };
 
 const appendItemDiv = function(parentDiv, item, id) {
   let itemDiv = generateItemDiv(id, item.description);
-  let deleteButton = getItemDeleteButton(id);
+  let deleteButton = getDeleteButton(id, "deleteItem");
+  deleteButton.onclick = deleteItem;
   let input = createInput(id, "checkbox", "checkbox");
   if (item.done == "true") {
     input.checked = true;
@@ -112,7 +112,7 @@ const getAllDivs = function(id, toDo) {
 };
 
 const deleteToDo = function(event) {
-  let toDo = event.target.parentElement.parentElement;
+  let toDo = event.target.parentElement;
   let name = getElementById("name").innerText;
   let toDoId = toDo.id;
   let content = { name, toDoId };
@@ -126,19 +126,15 @@ const displayToDo = function(toDo, TODOs) {
     id,
     toDo
   );
-  let deleteToDoButton = createButton(
-    "deleteToDo",
-    id,
-    "<i class='fas fa-trash-alt'></i>"
-  );
-  deleteToDoButton.onclick = deleteToDo;
+  let deleteButton = getDeleteButton(id, "deleteToDo");
+  deleteButton.onclick = deleteToDo;
   let saveButton = createButton("saveButton", "", "Save");
   saveButton.onclick = save;
   TODODiv.appendChild(titleDiv);
   TODODiv.appendChild(descriptionDiv);
   TODODiv.appendChild(addItemDiv);
   TODODiv.appendChild(itemsDiv);
-  TODODiv.appendChild(deleteToDoButton);
+  TODODiv.appendChild(deleteButton);
   TODODiv.appendChild(saveButton);
   TODOs.appendChild(TODODiv);
 };
@@ -221,17 +217,15 @@ const getItemAttributes = function(event) {
 };
 
 const deleteItem = function(event) {
-  let name = getElementById("name").innerText;
   let parentElement = event.target.parentElement;
-  let toDoId = parentElement.parentElement.parentElement.id;
-  let itemId = event.target.parentElement.id;
   parentElement.style.display = "none";
 };
 
 const generateAddItemDiv = function(id, item) {
   let itemId = getElementById(`taskList_${id}`).childNodes.length;
   let addItemDiv = generateDiv(setAttributes(itemId, "task", item));
-  let deleteButton = getItemDeleteButton(id);
+  let deleteButton = getDeleteButton(id, "deleteItem");
+  deleteButton.onclick = deleteItem;
   let input = createInput(id, "checkbox", "checkbox");
   addItemDiv.setAttribute("contenteditable", "true");
   addItemDiv.appendChild(deleteButton);
