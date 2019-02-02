@@ -10,7 +10,8 @@ const {
   deleteToDo,
   serveFile,
   loadInstances,
-  handleSession
+  handleSession,
+  renderSignUp
 } = require("./handlers");
 
 const App = require("./express");
@@ -28,6 +29,7 @@ app.post("/addItem", addToDoItem);
 app.post("/saveItems", saveItems);
 app.post("/deleteItem", deleteItem);
 app.post("/deleteToDo", deleteToDo);
+app.get("/signUp", renderSignUp);
 app.use(serveFile);
 
 module.exports = app.handleRequest.bind(app);

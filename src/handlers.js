@@ -5,7 +5,6 @@ const {
   ERROR_404,
   INDEX_PAGE_PATH,
   HOME_PAGE_PATH,
-  INVALID_USER_PATH,
   ENCODING,
   CREDENTIALS_PATH,
   COOKIES_PATH,
@@ -15,14 +14,22 @@ const {
   INCORRECT_PASSWORD,
   NAME_CONSTANT,
   EXPIRY_DATE,
-  EXISTING_USER
+  EXISTING_USER,
+  SIGN_UP_PAGE_PATH,
+  ERROR_CONSTANT
 } = require("./constants");
 
-const { sendResponse, parseData, getPath, confirmPassword } = require("./util");
+const {
+  sendResponse,
+  parseData,
+  getPath,
+  confirmPassword,
+  redirect
+} = require("./util");
 
 const homeHTML = fs.readFileSync(HOME_PAGE_PATH, ENCODING);
 const indexHTML = fs.readFileSync(INDEX_PAGE_PATH, ENCODING);
-const invalidUserHTML = fs.readFileSync(INVALID_USER_PATH, ENCODING);
+const signUpHTML = fs.readFileSync(SIGN_UP_PAGE_PATH, ENCODING);
 
 const isDirectoryExists = function(directoryPath) {
   return fs.existsSync(directoryPath);
@@ -74,8 +81,17 @@ const readBody = (req, res, next) => {
 };
 
 const serveFile = (req, res) => {
-  let fileName = getPath(req.url);
-  fs.readFile(fileName, function(err, contents) {
+  let filePath = getPath(req.url);
+  let redirectionPaths = ["./public/index.html", "./public/signUp.html"];
+  const redirectLocation = {
+    "./public/index.html": "/",
+    "./public/signUp.html": "/signUp"
+  };
+  if (redirectionPaths.includes(filePath)) {
+    redirect(req, res, redirectLocation[filePath]);
+    return;
+  }
+  fs.readFile(filePath, function(err, contents) {
     if (err) {
       sendResponse(res, NOT_FOUND, ERROR_404);
       return;
@@ -111,11 +127,16 @@ const isPasswordCorrect = function(parsedCredentials) {
 const login = function(req, res) {
   let parsedCredentials = parseData(req.body);
   if (!isUserValid(parsedCredentials)) {
+    let invalidUserHTML = indexHTML.replace(ERROR_CONSTANT, "Invalid User");
     sendResponse(res, invalidUserHTML, OK_200);
     return;
   }
   if (!isPasswordCorrect(parsedCredentials)) {
-    sendResponse(res, INCORRECT_PASSWORD, OK_200);
+    let incorrectPasswordHTML = indexHTML.replace(
+      ERROR_CONSTANT,
+      "Incorrect password"
+    );
+    sendResponse(res, incorrectPasswordHTML, OK_200);
     return;
   }
   if (!req.headers.cookie) {
@@ -156,10 +177,15 @@ const signUp = function(req, res) {
       sendResponse(res, indexHTML, OK_200);
       return;
     }
-    sendResponse(res, INCORRECT_PASSWORD, OK_200);
+    let incorrectPasswordHTML = signUpHTML.replace(
+      ERROR_CONSTANT,
+      INCORRECT_PASSWORD
+    );
+    sendResponse(res, incorrectPasswordHTML, OK_200);
     return;
   }
-  sendResponse(res, EXISTING_USER, OK_200);
+  let existingUserHTML = signUpHTML.replace(ERROR_CONSTANT, EXISTING_USER);
+  sendResponse(res, existingUserHTML, OK_200);
 };
 
 const addToDoToUser = function(toDoDetails) {
@@ -253,10 +279,16 @@ const loginCurrentUser = function(req, res) {
 
 const handleSession = function(req, res) {
   if (!req.headers.cookie) {
-    sendResponse(res, indexHTML, 200);
+    let loginHTML = indexHTML.replace(ERROR_CONSTANT, "");
+    sendResponse(res, loginHTML, OK_200);
     return;
   }
   loginCurrentUser(req, res);
+};
+
+const renderSignUp = function(req, res) {
+  let toRenderHTML = signUpHTML.replace(ERROR_CONSTANT, "");
+  sendResponse(res, toRenderHTML, OK_200);
 };
 
 module.exports = {
@@ -271,5 +303,6 @@ module.exports = {
   deleteToDo,
   serveFile,
   loadInstances,
-  handleSession
+  handleSession,
+  renderSignUp
 };

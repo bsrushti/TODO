@@ -95,7 +95,7 @@
   height: 4˝0px;
   color: white;
   position: absolute;
-  top: 250px;
+  top: 30%;
   right: 140px;
   width: 260px;
 }
@@ -171,8 +171,8 @@ td {
   height: 35px;
   color: white;
   position: absolute;
-  top: 400px;
-  right: 140px;
+  top: 45%;
+  right: 8%;
   width: 260px;
   padding-top: 2px;
   text-align: center;
@@ -216,4 +216,18 @@ td {
 
 button:focus {
   outline: none;
+}
+
+.errorMessage {
+  position: absolute;
+  top: 70%;
+  right: 28%;
+  color: red;
+  font-size: 15px;
+}
+
+.existingUser {
+  position: absolute;
+  top: 43%;
+  right: 16%;
 }
