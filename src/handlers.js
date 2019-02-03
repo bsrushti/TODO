@@ -139,7 +139,7 @@ const login = function(req, res) {
     sendResponse(res, incorrectPasswordHTML, OK_200);
     return;
   }
-  if (!req.headers.cookie) {
+  if (!req.headers.cookie || !cookies.includes(req.headers.cookie)) {
     setCookie(res, parsedCredentials.userName);
   }
   let finalHTML = homeHTML.replace(NAME_CONSTANT, parsedCredentials.userName);
@@ -278,12 +278,13 @@ const loginCurrentUser = function(req, res) {
 };
 
 const handleSession = function(req, res) {
-  if (!req.headers.cookie) {
-    let loginHTML = indexHTML.replace(ERROR_CONSTANT, "");
-    sendResponse(res, loginHTML, OK_200);
+  let currentCookie = req.headers.cookie;
+  if (req.headers.cookie && cookies.includes(currentCookie)) {
+    loginCurrentUser(req, res);
     return;
   }
-  loginCurrentUser(req, res);
+  let loginHTML = indexHTML.replace(ERROR_CONSTANT, "");
+  sendResponse(res, loginHTML, OK_200);
 };
 
 const renderSignUp = function(req, res) {
