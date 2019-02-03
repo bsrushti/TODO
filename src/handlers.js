@@ -151,7 +151,8 @@ const renderLogout = function(req, res) {
   cookies.splice(cookies.indexOf(currCookie), 1);
   fs.writeFile(COOKIES_PATH, JSON.stringify(cookies), err => {});
   res.setHeader("Set-Cookie", `${currCookie};${EXPIRY_DATE}`);
-  sendResponse(res, indexHTML, OK_200);
+  let indexPage = indexHTML.replace("##errorMessage##", "");
+  sendResponse(res, indexPage, OK_200);
 };
 
 const saveCredentials = function(parsedCredentials) {

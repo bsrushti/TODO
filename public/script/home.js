@@ -58,8 +58,14 @@ const getAddItemDiv = function(id) {
   return addItemDiv;
 };
 
+const setSerialNumber = number => `${number}. `;
+
 const generateItemDiv = function(id, description) {
-  let attributes = setAttributes(id, "task", description);
+  let attributes = setAttributes(
+    id,
+    "task",
+    setSerialNumber(id + 1) + description
+  );
   let itemDiv = generateDiv(attributes);
   itemDiv.setAttribute("contenteditable", "true");
   return itemDiv;
@@ -223,7 +229,9 @@ const deleteItem = function(event) {
 
 const generateAddItemDiv = function(id, item) {
   let itemId = getElementById(`taskList_${id}`).childNodes.length;
-  let addItemDiv = generateDiv(setAttributes(itemId, "task", item));
+  let addItemDiv = generateDiv(
+    setAttributes(itemId, "task", setSerialNumber(itemId + 1) + item)
+  );
   let deleteButton = getDeleteButton(id, "deleteItem");
   deleteButton.onclick = deleteItem;
   let input = createInput(id, "checkbox", "checkbox");
