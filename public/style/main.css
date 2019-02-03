@@ -110,7 +110,7 @@
   height: 4˝0px;
   color: white;
   position: absolute;
-  top: 40%;
+  top: 280px;
   right: 140px;
   width: 260px;
 }
@@ -193,8 +193,8 @@ td {
   height: 35px;
   color: white;
   position: absolute;
-  top: 65%;
-  right: 10.5%;
+  top: 472px;
+  right: 140px;
   width: 260px;
   padding-top: 2px;
   text-align: center;
@@ -253,8 +253,8 @@ td {
 
 .existingUser {
   position: absolute;
-  top: 61%;
-  right: 16%;
+  top: 455px;
+  right: 285px;
 }
 
 .homeContainer {
