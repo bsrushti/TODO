@@ -159,7 +159,7 @@ td {
   font-family: "Merienda", cursive;
   overflow: scroll;
   position: relative;
-  background-color: blanchedalmond;
+  background-image: linear-gradient(to right, #c0e3f0, #8edbf5);
   box-shadow: 3px 13px 12px 5px rgba(143, 141, 143, 1);
 }
 
@@ -171,7 +171,7 @@ td {
 
 .title {
   border-bottom: 1px solid black;
-  background-color: #f5b041;
+  background-image: linear-gradient(to right, #c0e3f0, #31beec);
   font-weight: bold;
   height: 15%;
   margin: 0px;
