@@ -10,7 +10,6 @@ const {
   DATA_DIR,
   INCORRECT_PASSWORD,
   NAME_CONSTANT,
-  EXPIRY_DATE,
   EXISTING_USER,
   SIGN_UP_PAGE_PATH,
   ERROR_CONSTANT
@@ -121,7 +120,7 @@ const renderLogout = function(req, res) {
   let currCookie = req.headers.cookie;
   cookies.splice(cookies.indexOf(currCookie), 1);
   fs.writeFile(COOKIES_PATH, JSON.stringify(cookies), err => {});
-  res.setHeader("Set-Cookie", `${currCookie};${EXPIRY_DATE}`);
+  res.clearCookie(currCookie);
   let indexPage = indexHTML.replace("##errorMessage##", "");
   res.send(indexPage);
 };
