@@ -1,8 +1,6 @@
 const fs = require("fs");
 
 const {
-  OK_200,
-  ERROR_404,
   INDEX_PAGE_PATH,
   HOME_PAGE_PATH,
   ENCODING,
@@ -10,22 +8,14 @@ const {
   COOKIES_PATH,
   USER_DETAILS_PATH,
   DATA_DIR,
-  NOT_FOUND,
   INCORRECT_PASSWORD,
   NAME_CONSTANT,
-  EXPIRY_DATE,
   EXISTING_USER,
   SIGN_UP_PAGE_PATH,
   ERROR_CONSTANT
 } = require("./constants");
 
-const {
-  sendResponse,
-  parseData,
-  getPath,
-  confirmPassword,
-  redirect
-} = require("./util");
+const { parseData, confirmPassword } = require("./util");
 
 const homeHTML = fs.readFileSync(HOME_PAGE_PATH, ENCODING);
 const indexHTML = fs.readFileSync(INDEX_PAGE_PATH, ENCODING);
@@ -80,26 +70,6 @@ const readBody = (req, res, next) => {
   });
 };
 
-const serveFile = (req, res) => {
-  let filePath = getPath(req.url);
-  let redirectionPaths = ["./public/index.html", "./public/signUp.html"];
-  const redirectLocation = {
-    "./public/index.html": "/",
-    "./public/signUp.html": "/signUp"
-  };
-  if (redirectionPaths.includes(filePath)) {
-    redirect(req, res, redirectLocation[filePath]);
-    return;
-  }
-  fs.readFile(filePath, function(err, contents) {
-    if (err) {
-      sendResponse(res, NOT_FOUND, ERROR_404);
-      return;
-    }
-    sendResponse(res, contents, OK_200);
-  });
-};
-
 const setCookie = function(res, userName) {
   let cookie = `${userName}:${new Date().getTime()}`;
   cookies.push(cookie);
@@ -128,7 +98,7 @@ const login = function(req, res) {
   let parsedCredentials = parseData(req.body);
   if (!isUserValid(parsedCredentials)) {
     let invalidUserHTML = indexHTML.replace(ERROR_CONSTANT, "Invalid User");
-    sendResponse(res, invalidUserHTML, OK_200);
+    res.send(invalidUserHTML);
     return;
   }
   if (!isPasswordCorrect(parsedCredentials)) {
@@ -136,23 +106,23 @@ const login = function(req, res) {
       ERROR_CONSTANT,
       "Incorrect password"
     );
-    sendResponse(res, incorrectPasswordHTML, OK_200);
+    res.send(incorrectPasswordHTML);
     return;
   }
   if (!req.headers.cookie || !cookies.includes(req.headers.cookie)) {
     setCookie(res, parsedCredentials.userName);
   }
   let finalHTML = homeHTML.replace(NAME_CONSTANT, parsedCredentials.userName);
-  sendResponse(res, finalHTML, OK_200);
+  res.send(finalHTML);
 };
 
 const renderLogout = function(req, res) {
   let currCookie = req.headers.cookie;
   cookies.splice(cookies.indexOf(currCookie), 1);
   fs.writeFile(COOKIES_PATH, JSON.stringify(cookies), err => {});
-  res.setHeader("Set-Cookie", `${currCookie};${EXPIRY_DATE}`);
+  res.clearCookie(currCookie);
   let indexPage = indexHTML.replace("##errorMessage##", "");
-  sendResponse(res, indexPage, OK_200);
+  res.send(indexPage);
 };
 
 const saveCredentials = function(parsedCredentials) {
@@ -175,18 +145,19 @@ const signUp = function(req, res) {
   if (!isAlreadyUser(parsedCredentials.userName)) {
     if (confirmPassword(parsedCredentials)) {
       addNewUser(parsedCredentials);
-      sendResponse(res, indexHTML, OK_200);
+      let toRenderHTML = indexHTML.replace(ERROR_CONSTANT, "");
+      res.send(toRenderHTML);
       return;
     }
     let incorrectPasswordHTML = signUpHTML.replace(
       ERROR_CONSTANT,
       INCORRECT_PASSWORD
     );
-    sendResponse(res, incorrectPasswordHTML, OK_200);
+    res.send(incorrectPasswordHTML);
     return;
   }
   let existingUserHTML = signUpHTML.replace(ERROR_CONSTANT, EXISTING_USER);
-  sendResponse(res, existingUserHTML, OK_200);
+  res.send(existingUserHTML);
 };
 
 const addToDoToUser = function(toDoDetails) {
@@ -199,7 +170,7 @@ const addToDoToUser = function(toDoDetails) {
 
 const addToDo = function(req, res) {
   if (req.url == "/userDetail") {
-    sendResponse(res, JSON.stringify(users.users), OK_200);
+    res.send(JSON.stringify(users.users));
     return;
   }
   let toDoDetails = JSON.parse(req.body);
@@ -285,12 +256,12 @@ const handleSession = function(req, res) {
     return;
   }
   let loginHTML = indexHTML.replace(ERROR_CONSTANT, "");
-  sendResponse(res, loginHTML, OK_200);
+  res.send(loginHTML);
 };
 
 const renderSignUp = function(req, res) {
   let toRenderHTML = signUpHTML.replace(ERROR_CONSTANT, "");
-  sendResponse(res, toRenderHTML, OK_200);
+  res.send(toRenderHTML);
 };
 
 module.exports = {
@@ -303,7 +274,6 @@ module.exports = {
   saveItems,
   deleteItem,
   deleteToDo,
-  serveFile,
   loadInstances,
   handleSession,
   renderSignUp

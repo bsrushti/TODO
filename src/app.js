@@ -8,15 +8,14 @@ const {
   saveItems,
   deleteItem,
   deleteToDo,
-  serveFile,
   loadInstances,
   handleSession,
   renderSignUp
 } = require("./handlers");
 
-const App = require("./express");
+const express = require("express");
 loadInstances();
-const app = new App();
+const app = new express();
 
 app.use(readBody);
 app.get("/", handleSession);
@@ -30,6 +29,6 @@ app.post("/saveItems", saveItems);
 app.post("/deleteItem", deleteItem);
 app.post("/deleteToDo", deleteToDo);
 app.get("/signUp", renderSignUp);
-app.use(serveFile);
+app.use(express.static("public"));
 
-module.exports = app.handleRequest.bind(app);
+module.exports = app;
