@@ -80,26 +80,6 @@ const readBody = (req, res, next) => {
   });
 };
 
-const serveFile = (req, res) => {
-  let filePath = getPath(req.url);
-  let redirectionPaths = ["./public/index.html", "./public/signUp.html"];
-  const redirectLocation = {
-    "./public/index.html": "/",
-    "./public/signUp.html": "/signUp"
-  };
-  if (redirectionPaths.includes(filePath)) {
-    redirect(req, res, redirectLocation[filePath]);
-    return;
-  }
-  fs.readFile(filePath, function(err, contents) {
-    if (err) {
-      sendResponse(res, NOT_FOUND, ERROR_404);
-      return;
-    }
-    sendResponse(res, contents, OK_200);
-  });
-};
-
 const setCookie = function(res, userName) {
   let cookie = `${userName}:${new Date().getTime()}`;
   cookies.push(cookie);
@@ -303,7 +283,6 @@ module.exports = {
   saveItems,
   deleteItem,
   deleteToDo,
-  serveFile,
   loadInstances,
   handleSession,
   renderSignUp
