@@ -10,7 +10,7 @@ let itemCounter = generateCounter();
 const getElementById = id => document.getElementById(id);
 
 const generateDiv = function(attributes) {
-  let div = document.createElement("div");
+ const div = document.createElement("div");
   div.id = attributes.id;
   div.className = attributes.className;
   div.innerText = attributes.value;
@@ -32,7 +32,7 @@ const setAttributes = function(id, className, value = "") {
 };
 
 const createButton = function(className, id, innerHTML) {
-  let button = document.createElement("BUTTON");
+ const button = document.createElement("BUTTON");
   button.className = className;
   button.id = id;
   button.innerHTML = innerHTML;
@@ -40,7 +40,7 @@ const createButton = function(className, id, innerHTML) {
 };
 
 const createInput = function(id, type, className) {
-  let input = document.createElement("input");
+ const input = document.createElement("input");
   input.type = type;
   input.className = className;
   input.id = id;
@@ -48,36 +48,36 @@ const createInput = function(id, type, className) {
 };
 
 const getAddItemDiv = function(id) {
-  let addItemDiv = generateDiv(setAttributes("items", "items"));
-  let input = createInput(`addTask_${id}`, "text", "insertItem");
+ const addItemDiv = generateDiv(setAttributes("items", "items"));
+ const input = createInput(`addTask_${id}`, "text", "insertItem");
   input.setAttribute("placeHolder", "enter task");
   addItemDiv.appendChild(input);
-  let button = createButton("plus", "addItem", `&plus;`);
+ const button = createButton("plus", "addItem", `&plus;`);
   button.onclick = addItem;
   addItemDiv.appendChild(button);
   return addItemDiv;
 };
 
 const generateItemDiv = function(id, description) {
-  let attributes = setAttributes(id, "task", description);
-  let itemDiv = generateDiv(attributes);
+ const attributes = setAttributes(id, "task", description);
+ const itemDiv = generateDiv(attributes);
   itemDiv.setAttribute("contenteditable", "true");
   return itemDiv;
 };
 
 const getDeleteButton = function(id, className) {
-  let deleteButton = document.createElement("i");
+ const deleteButton = document.createElement("i");
   deleteButton.id = id;
   deleteButton.className = `fas fa-trash-alt ${className}`;
   return deleteButton;
 };
 
 const appendItemDiv = function(parentDiv, item, id) {
-  let itemDiv = generateItemDiv(id, item.description);
-  let deleteButton = getDeleteButton(id, "deleteItem");
+ const itemDiv = generateItemDiv(id, item.description);
+ const deleteButton = getDeleteButton(id, "deleteItem");
   deleteButton.onclick = deleteItem;
   deleteButton.setAttribute("contenteditable", "false");
-  let input = createInput(id, "checkbox", "checkbox");
+ const input = createInput(id, "checkbox", "checkbox");
   if (item.done == "true") {
     input.checked = true;
   }
@@ -87,8 +87,8 @@ const appendItemDiv = function(parentDiv, item, id) {
 };
 
 const getItemsDiv = function(id, items) {
-  let parentDiv = getTaskListDiv(id);
-  let counter = generateCounter();
+ const parentDiv = getTaskListDiv(id);
+ const counter = generateCounter();
   items.forEach(item => {
     appendItemDiv(parentDiv, item, counter());
   });
@@ -98,11 +98,11 @@ const getItemsDiv = function(id, items) {
 const getTODODiv = id => generateDiv({ id, className: "TODO", value: "" });
 
 const getAllDivs = function(id, toDo) {
-  let titleDiv = getTitleDiv(id, toDo.title);
-  let descriptionDiv = getDescriptionDiv(id, toDo.description);
-  let itemsDiv = getItemsDiv(id, toDo.items);
-  let addItemDiv = getAddItemDiv(id);
-  let TODODiv = getTODODiv(id);
+ const titleDiv = getTitleDiv(id, toDo.title);
+ const descriptionDiv = getDescriptionDiv(id, toDo.description);
+ const itemsDiv = getItemsDiv(id, toDo.items);
+ const addItemDiv = getAddItemDiv(id);
+ const TODODiv = getTODODiv(id);
   return {
     titleDiv,
     descriptionDiv,
@@ -113,23 +113,26 @@ const getAllDivs = function(id, toDo) {
 };
 
 const deleteToDo = function(event) {
-  let toDo = event.target.parentElement;
-  let name = getElementById("name").innerText;
-  let toDoId = toDo.id;
-  let content = { name, toDoId };
+ const toDo = event.target.parentElement;
+ const name = getElementById("name").innerText;
+ const toDoId = toDo.id;
+ const content = { name, toDoId };
   writeContentToFile("/deleteToDo", JSON.stringify(content));
   toDo.style.display = "none";
 };
 
 const displayToDo = function(toDo, TODOs) {
-  let id = toDoCounter();
-  let { titleDiv, descriptionDiv, itemsDiv, addItemDiv, TODODiv } = getAllDivs(
-    id,
-    toDo
-  );
-  let deleteButton = getDeleteButton(id, "deleteToDo");
+ const id = toDoCounter();
+ const  {
+    titleDiv,
+    descriptionDiv,
+    itemsDiv,
+    addItemDiv,
+    TODODiv
+  } = getAllDivs(id, toDo);
+ const deleteButton = getDeleteButton(id, "deleteToDo");
   deleteButton.onclick = deleteToDo;
-  let saveButton = createButton("saveButton", "", "Save");
+ const saveButton = createButton("saveButton", "", "Save");
   saveButton.onclick = save;
   TODODiv.appendChild(titleDiv);
   TODODiv.appendChild(descriptionDiv);
@@ -141,17 +144,17 @@ const displayToDo = function(toDo, TODOs) {
 };
 
 const getItemsValue = function(event) {
-  let name = getElementById("name").innerText;
-  let id = event.target.parentElement.id;
-  let items = getElementById(`taskList_${id}`);
+ const name = getElementById("name").innerText;
+ const id = event.target.parentElement.id;
+ const items = getElementById(`taskList_${id}`);
   return { name, id, items };
 };
 
 const getModifiedItems = function(items) {
-  let modifiedItems = [];
+ const modifiedItems = [];
   items.childNodes.forEach(childNode => {
     if (childNode.style.display == "") {
-      let itemAttributes = { description: childNode.innerText, done: "false" };
+     const itemAttributes = { description: childNode.innerText, done: "false" };
       if (childNode.lastChild.checked) {
         itemAttributes.done = "true";
       }
@@ -162,14 +165,14 @@ const getModifiedItems = function(items) {
 };
 
 const save = function(event) {
-  let { name, id, items } = getItemsValue(event);
-  let modifiedItems = getModifiedItems(items);
-  let content = { name: name, id: id, items: modifiedItems };
+ const  { name, id, items } = getItemsValue(event);
+ const modifiedItems = getModifiedItems(items);
+ const content = { name: name, id: id, items: modifiedItems };
   writeContentToFile("/saveItems", JSON.stringify(content));
 };
 
 const displayAllTodo = function(toDoList) {
-  const TODOs = getElementById("TODOs");
+ const  TODOs = getElementById("TODOs");
   toDoList.forEach(toDo => {
     displayToDo(toDo, TODOs);
   });
@@ -185,49 +188,49 @@ const writeContentToFile = function(url, content) {
 };
 
 const getElements = function() {
-  let nameElement = getElementById("name");
-  let titleElement = getElementById("title");
-  let descriptionElement = getElementById("description");
+ const nameElement = getElementById("name");
+ const titleElement = getElementById("title");
+ const descriptionElement = getElementById("description");
   return { nameElement, titleElement, descriptionElement };
 };
 
 const getToDoValues = function(elements) {
-  const { nameElement, titleElement, descriptionElement } = elements;
-  let name = nameElement.innerText;
-  let title = titleElement.value;
-  let description = descriptionElement.value;
+ const  { nameElement, titleElement, descriptionElement } = elements;
+ const name = nameElement.innerText;
+ const title = titleElement.value;
+ const description = descriptionElement.value;
   titleElement.value = "";
   descriptionElement.value = "";
   return { name, title, description };
 };
 
 const addToDo = function() {
-  let elements = getElements();
-  let { name, title, description } = getToDoValues(elements);
-  let content = { name: name, title: title, description: description };
+ const elements = getElements();
+ const  { name, title, description } = getToDoValues(elements);
+ const content = { name: name, title: title, description: description };
   writeContentToFile("/addToDo", JSON.stringify(content));
-  let items = [];
+ const items = [];
   displayAllTodo([{ title, description, items }]);
 };
 
 const getItemAttributes = function(event) {
-  let name = getElementById("name").innerText;
-  let id = event.target.parentElement.parentElement.id;
-  let item = getElementById(`addTask_${id}`).value;
+ const name = getElementById("name").innerText;
+ const id = event.target.parentElement.parentElement.id;
+ const item = getElementById(`addTask_${id}`).value;
   return { name, id, item };
 };
 
 const deleteItem = function(event) {
-  let parentElement = event.target.parentElement;
+ const parentElement = event.target.parentElement;
   parentElement.style.display = "none";
 };
 
 const generateAddItemDiv = function(id, item) {
-  let itemId = getElementById(`taskList_${id}`).childNodes.length;
-  let addItemDiv = generateDiv(setAttributes(itemId, "task", item));
-  let deleteButton = getDeleteButton(id, "deleteItem");
+ const itemId = getElementById(`taskList_${id}`).childNodes.length;
+ const addItemDiv = generateDiv(setAttributes(itemId, "task", item));
+ const deleteButton = getDeleteButton(id, "deleteItem");
   deleteButton.onclick = deleteItem;
-  let input = createInput(id, "checkbox", "checkbox");
+ const input = createInput(id, "checkbox", "checkbox");
   addItemDiv.setAttribute("contenteditable", "true");
   addItemDiv.appendChild(deleteButton);
   addItemDiv.appendChild(input);
@@ -235,16 +238,16 @@ const generateAddItemDiv = function(id, item) {
 };
 
 const addItem = function(event) {
-  let { name, id, item } = getItemAttributes(event);
-  let content = { name: name, toDoId: id, item: item };
+ const  { name, id, item } = getItemAttributes(event);
+ const content = { name: name, toDoId: id, item: item };
   writeContentToFile("/addItem", JSON.stringify(content));
-  let addItemDiv = generateAddItemDiv(id, item);
+ const addItemDiv = generateAddItemDiv(id, item);
   getElementById(`taskList_${id}`).appendChild(addItemDiv);
   getElementById(`addTask_${id}`).value = "";
 };
 
 const initialize = function() {
-  let name = getElementById("name").innerText;
+ const name = getElementById("name").innerText;
   fetch("/userDetail", { method: "POST" })
     .then(data => {
       return data.json();

@@ -1,9 +1,9 @@
 const { PUBLIC_DIR_PATH, INDEX_PAGE_PATH } = require("./constants");
 
 const parseData = text => {
-  let args = {};
-  const splitKeyValue = pair => pair.split("=");
-  const assignKeyValueToArgs = ([key, value]) => (args[key] = value);
+ const args = {};
+ const  splitKeyValue = pair => pair.split("=");
+ const  assignKeyValueToArgs = ([key, value]) => (args[key] = value);
   text
     .split("&")
     .map(splitKeyValue)

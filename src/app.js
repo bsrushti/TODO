@@ -20,7 +20,7 @@ const app = new express();
 app.use(readBody);
 app.get("/", handleSession);
 app.post("/", renderLogout);
-app.post("/myToDo", login);
+app.post("/note-zilla", login);
 app.post("/submit", signUp);
 app.post("/addToDo", addToDo);
 app.post("/userDetail", addToDo);
