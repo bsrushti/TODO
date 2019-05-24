@@ -1,3 +1,6 @@
+const http = require("http");
 const app = require("./src/app.js");
-const PORT = 8050;
-app.listen(PORT, () => console.log("listening on", PORT));
+
+const PORT = process.env.PORT || 8080;
+
+app.listen(PORT, () => console.log("listening on ", PORT));
