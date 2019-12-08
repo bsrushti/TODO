@@ -24,7 +24,7 @@ const getDescriptionDiv = (id, description) =>
   generateDiv(setAttributes(`description_${id}`, "description", description));
 
 const getTaskListDiv = function(id) {
-  return generateDiv(setAttributes(`taskList_${id}`, "taskList", ""));
+  return generateDiv(setAttributes(`taskList_${id}`, "task-list", ""));
 };
 
 const setAttributes = function(id, className, value = "") {
